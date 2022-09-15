@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FantasyBets.Data
 {
@@ -40,6 +41,7 @@ namespace FantasyBets.Data
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
+        [DataType(DataType.EmailAddress)]
         public string Email { get; set; } = null!;
 
     }
