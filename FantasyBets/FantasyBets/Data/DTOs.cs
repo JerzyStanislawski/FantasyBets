@@ -26,7 +26,7 @@ namespace FantasyBets.Data
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        ICollection<Game> Games { get; set; } = null!;
+        public ICollection<Game> Games { get; set; } = null!;
     }
 
     public class Season
@@ -34,7 +34,7 @@ namespace FantasyBets.Data
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public string Symbol { get; set; } = null!;
-        ICollection<Round> Rounds { get; set; } = null!;
+        public ICollection<Round> Rounds { get; set; } = null!;
     }
 
     public class User

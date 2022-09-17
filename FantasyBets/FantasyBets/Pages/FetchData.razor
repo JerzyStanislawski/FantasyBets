@@ -3,6 +3,7 @@
 <PageTitle>Weather forecast</PageTitle>
 
 @using FantasyBets.Data
+@inject IDbContextFactory<DataContext> DbFactory
 
 <h1>Weather forecast</h1>
 
@@ -23,7 +24,12 @@
     </table>
 
 @code {
+    List<Season>? seasons = null!;
+
     protected override async Task OnInitializedAsync()
     {
+        await using var db = await DbFactory.CreateDbContextAsync();
+        await db.Database.EnsureCreatedAsync();
+        seasons = await db.Seasons!.Include(x => x.Rounds).ToListAsync();
     }
 }

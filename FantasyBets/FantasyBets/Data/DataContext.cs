@@ -1,18 +1,21 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
 namespace FantasyBets.Data
 {
-    public class DataContext : DbContext
+    public class DataContext : IdentityDbContext
     {
         public static readonly string FantasyDb = nameof(FantasyDb).ToLower();
 
         public DbSet<Season>? Seasons { get; set; }
 
+        public DataContext(DbContextOptions options) : base(options)
+        {
+        }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
-            Database.EnsureCreated();
         }
     }
 }
