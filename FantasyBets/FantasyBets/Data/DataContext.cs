@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace FantasyBets.Data
 {
-    public class DataContext : IdentityDbContext
+    public class DataContext : IdentityDbContext<IdentityUser>
     {
         public static readonly string FantasyDb = nameof(FantasyDb).ToLower();
 
