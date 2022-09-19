@@ -1,9 +1,10 @@
-﻿@page "/account/login"
+﻿@page "/account/register"
 @inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
 @inject NavigationManager NavigationManager
 
 <div class="card">
-    <h4 class="card-header">Login</h4>
+    <h4 class="card-header">Register</h4>
     <div class="card-body">
         <EditForm Model="@model" OnValidSubmit="OnValidSubmit">
             <DataAnnotationsValidator />
@@ -22,9 +23,9 @@
                 {
                     <span class="spinner-border spinner-border-sm mr-1"></span>
                 }
-                Login
+                Register
             </button>
-            <NavLink href="account/register" class="btn btn-link">Register</NavLink>
+            <NavLink href="account/login" class="btn btn-link">Cancel</NavLink>
         </EditForm>
     </div>
 </div>
@@ -38,12 +39,17 @@
         loading = true;
         try
         {
-            var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, false, false);
+            var identity = new IdentityUser
+                {
+                    UserName = model.Email,
+                    Email = model.Email
+                };
+            var result = await UserManager.CreateAsync(identity, model.Password);
 
             if (result.Succeeded)
             {
-                var returnUrl = HttpUtility.ParseQueryString(new Uri(NavigationManager.Uri).Query)["returnUrl"] ?? "";
-                NavigationManager.NavigateTo(returnUrl);
+                await SignInManager.SignInAsync(identity, false);
+                NavigationManager.NavigateTo("~/");
             }
             else
             {
