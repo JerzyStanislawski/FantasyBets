@@ -1,4 +1,7 @@
 ﻿@inherits LayoutComponentBase
+@inject NavigationManager NavigationManager
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
 
 <PageTitle>FantasyBets</PageTitle>
 
@@ -9,7 +12,8 @@
 
     <main>
         <div class="top-row px-4">
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+            <span>@user!.Identity!.Name</span>
+            <a href="/Identity/Account/Logout">Logout</a>
         </div>
 
         <article class="content px-4">
@@ -17,3 +21,25 @@
         </article>
     </main>
 </div>
+
+@code{
+    [CascadingParameter] protected Task<AuthenticationState> AuthStat { get; set; } = null!;
+    System.Security.Claims.ClaimsPrincipal user = null!;
+
+    protected async override Task OnInitializedAsync()
+    {
+        base.OnInitialized();
+
+        if (AuthStat is null)
+            return;
+
+        user = (await AuthStat).User;
+        if (user is null || user.Identity is null)
+            return;
+
+        if(!user.Identity.IsAuthenticated)
+        {
+            NavigationManager.NavigateTo($"/Identity/Account/Login");
+        }
+    }
+}

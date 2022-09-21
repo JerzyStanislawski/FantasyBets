@@ -13,11 +13,11 @@ builder.Services.AddServerSideBlazor();
 builder.Services.AddDbContextFactory<DataContext>(opt =>
     opt.UseSqlite($"Data Source={nameof(DataContext.FantasyDb)}.db"));
 
-builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+builder.Services.AddDefaultIdentity<IdentityUser>(options =>
 {
     options.SignIn.RequireConfirmedEmail = false;
     options.Password.RequireLowercase = false;
-    options.Password.RequireLowercase = false;
+    options.Password.RequireUppercase = false;
     options.Password.RequireNonAlphanumeric = false;
     options.Password.RequireDigit = false;
 })
