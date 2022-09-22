@@ -17,6 +17,11 @@ namespace FantasyBets.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Season>().HasMany(s => s.Rounds).WithOne(r => r.Season);
+            modelBuilder.Entity<Round>().HasMany(r => r.Games).WithOne(g => g.Round);
+            modelBuilder.Entity<Game>().HasOne(r => r.Home).WithMany(t => t.Games);
+            modelBuilder.Entity<Game>().HasOne(r => r.Away).WithMany(t => t.Games);
         }
     }
 }

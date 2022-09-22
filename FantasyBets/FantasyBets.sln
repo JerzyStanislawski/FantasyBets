@@ -5,6 +5,8 @@ VisualStudioVersion = 17.2.32526.322
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FantasyBets", "FantasyBets\FantasyBets.csproj", "{9D2E511D-4C14-4416-A7B0-95004499AC42}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FantasyBets.Tests", "FantasyBets.Tests\FantasyBets.Tests.csproj", "{3162B8C0-A324-443C-8D55-B45C104C83D9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{9D2E511D-4C14-4416-A7B0-95004499AC42}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9D2E511D-4C14-4416-A7B0-95004499AC42}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9D2E511D-4C14-4416-A7B0-95004499AC42}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3162B8C0-A324-443C-8D55-B45C104C83D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3162B8C0-A324-443C-8D55-B45C104C83D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3162B8C0-A324-443C-8D55-B45C104C83D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3162B8C0-A324-443C-8D55-B45C104C83D9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
