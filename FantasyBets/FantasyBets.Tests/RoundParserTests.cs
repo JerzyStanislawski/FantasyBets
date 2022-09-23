@@ -54,5 +54,19 @@ namespace FantasyBets.Tests
             round.Games.Select(g => g.HomeTeam.Id).Concat(round.Games.Select(g => g.AwayTeam.Id)).All(x => x >= 100 && x <= 117).Should().BeTrue();
             round.Season.Should().Be(season);
         }
+
+        [Fact]
+        public async Task RoundParser_ShouldReturnEmptyRound_WhenNoData()
+        {
+            using var httpClient = new HttpClient();
+            var response = await httpClient.GetAsync("https://feeds.incrowdsports.com/provider/euroleague-feeds/v2/competitions/E/seasons/E2022/games?teamCode=&phaseTypeCode=RS&roundNumber=999");
+            var result = await response.Content.ReadAsStringAsync();
+
+            var dataProvider = A.Fake<IDataProvider>();
+            var parser = new RoundParser(dataProvider);
+            var round = await parser.Parse(result);
+
+            round.Games.Count.Should().Be(0);
+        }
     }
 }

@@ -38,6 +38,8 @@ namespace FantasyBets.Data
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public int Number { get; set; }
+        public bool IsFinished { get; set; }
+        public DateTime StartTime { get; set; }
         public string Phase { get; set; } = null!;
         public ICollection<Game> Games { get; set; } = null!;
         public Season Season { get; set; } = null!;

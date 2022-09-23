@@ -1,5 +1,7 @@
+using FantasyBets;
 using FantasyBets.Data;
 using FantasyBets.Logic.Parsers;
+using FantasyBets.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Identity;
@@ -24,9 +26,14 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options =>
 })
     .AddEntityFrameworkStores<DataContext>();
 
+builder.Services.AddLogging(options => options.AddConsole());
+
+builder.Services.AddHostedService<UpdateRoundsHostedService>();
+
 builder.Services.AddHttpClient();
 builder.Services.AddSingleton<IDataProvider, DataProvider>();
 builder.Services.AddSingleton<RoundParser>();
+builder.Services.AddSingleton(builder.Configuration.Get<Configuration>());
 
 var app = builder.Build();
 

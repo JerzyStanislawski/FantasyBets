@@ -29,6 +29,9 @@ namespace FantasyBets.Logic.Parsers
                 Games = new List<Game>()
             };
 
+            if (!roundJson!.Data.Any())
+                return round;
+
             foreach (var game in roundJson!.Data)
             {
                 if (game is null || game.Home is null || game.Away is null)
@@ -62,6 +65,7 @@ namespace FantasyBets.Logic.Parsers
             if (gameRound.Count() != 1)
                 throw new ArgumentException("Incorrect phase");
             round.Number = gameRound.Single()!;
+            round.StartTime = round.Games.Select(x => x.Time).Min();
 
             return round;
         }

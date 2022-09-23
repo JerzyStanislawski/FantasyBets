@@ -1,5 +1,24 @@
 ﻿@page "/"
+@using FantasyBets.Data
+@inject IDbContextFactory<DataContext> DbContextFactory
 
 <PageTitle>Index</PageTitle>
 
-<h1>Hello, world!</h1>
+<h2>Round 1</h2>
+
+<ul>
+    @foreach (var game in dbContext.Rounds!.Include(x => x.Games).ThenInclude(x => x.HomeTeam).Include(x => x.Games).ThenInclude(x => x.AwayTeam).First().Games)
+    {
+        <li>@game.HomeTeam.Name vs @game.AwayTeam.Name</li>
+    }
+</ul>
+
+@code {
+    DataContext dbContext = null!;
+    protected override async Task OnInitializedAsync()
+    {
+        dbContext = await DbContextFactory.CreateDbContextAsync();
+
+        await base.OnInitializedAsync();
+    }
+}
