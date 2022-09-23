@@ -5,23 +5,30 @@ namespace FantasyBets.Logic.Parsers
 {
     public class RoundParser
     {
-        private readonly DataContext _dataContext;
+        private readonly IDataProvider _dataProvider;
 
-        public RoundParser(DataContext dataContext)
+        public RoundParser(IDataProvider dataProvider)
         {
-            _dataContext = dataContext;
+            _dataProvider = dataProvider;
         }
 
-        public Data.Round Parse(string roundPayload)
+        public async Task<Round> Parse(string roundPayload)
         {
-            var roundJson = JsonSerializer.Deserialize<RoundJson>(roundPayload);
+            var roundJson = JsonSerializer.Deserialize<RoundJson>(roundPayload, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
 
             if (roundJson is null || roundJson.Data is null)
                 throw new ArgumentException("Invalid round payload");
-            if (roundJson?.Status != "Success")
+            if (roundJson?.Status != "success")
                 throw new ArgumentException("Round status not successful");
 
-            var round = new Data.Round();
+            var round = new Round()
+            {
+                Games = new List<Game>()
+            };
+
             foreach (var game in roundJson!.Data)
             {
                 if (game is null || game.Home is null || game.Away is null)
@@ -31,29 +38,30 @@ namespace FantasyBets.Logic.Parsers
                 {
                     Code = game.Code,
                     Time = game.Date,
-                    Home = ConvertTeam(game.Home),
-                    Away = ConvertTeam(game.Away),
+                    HomeTeam = await _dataProvider.GetTeamBySymbol(game.Home.Tla!) ?? ConvertTeam(game.Home),
+                    AwayTeam = await _dataProvider.GetTeamBySymbol(game.Away.Tla!) ?? ConvertTeam(game.Away),
                 });
             }
 
             var seasons = roundJson!.Data.Select(x => x.Season).Distinct();
             if (seasons.Count() != 1)
                 throw new ArgumentException("Incorrect seasons");
-            round.Season = new Data.Season
+            var season = seasons.Single()!;
+            round.Season = await _dataProvider.GetSeasonByCode(season.Code!) ?? new Data.Season
             {
-                Code = seasons.Single()!.Code!,
-                Name = seasons.Single()!.Alias!
+                Code = season.Code!,
+                Name = season.Alias!
             };
 
-            var phase = roundJson!.Data.Select(x => x.PhaseType).Distinct();
+            var phase = roundJson!.Data.Select(x => x.PhaseType!.Name).Distinct();
             if (phase.Count() != 1)
                 throw new ArgumentException("Incorrect phase");
-            round.Phase = phase.Single()!.Name!;
+            round.Phase = phase.Single()!;
 
-            var gameRound = roundJson!.Data.Select(x => x.GameRound).Distinct();
+            var gameRound = roundJson!.Data.Select(x => x.Round!.Round).Distinct();
             if (gameRound.Count() != 1)
                 throw new ArgumentException("Incorrect phase");
-            round.Number = gameRound.Single()!.Round!;
+            round.Number = gameRound.Single()!;
 
             return round;
         }
@@ -81,7 +89,7 @@ namespace FantasyBets.Logic.Parsers
         {
             public PhaseType? PhaseType { get; set; }
             public Season? Season { get; set; }
-            public GameRound? GameRound { get; set; }
+            public GameRound? Round { get; set; }
             public Team? Home { get; set; }
             public Team? Away { get; set; }
             public int Code { get; set; }
@@ -109,6 +117,17 @@ namespace FantasyBets.Logic.Parsers
         {
             public string? Code { get; set; }
             public string? Alias { get; set; }
+
+            public override bool Equals(object? obj)
+            {
+                return obj is Season season &&
+                       Code == season.Code;
+            }
+
+            public override int GetHashCode()
+            {
+                return HashCode.Combine(Code);
+            }
         }
     }
 }

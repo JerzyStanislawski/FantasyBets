@@ -1,4 +1,5 @@
 using FantasyBets.Data;
+using FantasyBets.Logic.Parsers;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Identity;
@@ -22,6 +23,10 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options =>
     options.Password.RequireDigit = false;
 })
     .AddEntityFrameworkStores<DataContext>();
+
+builder.Services.AddHttpClient();
+builder.Services.AddSingleton<IDataProvider, DataProvider>();
+builder.Services.AddSingleton<RoundParser>();
 
 var app = builder.Build();
 

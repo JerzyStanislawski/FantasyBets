@@ -10,7 +10,8 @@ namespace FantasyBets.Data
         public string Symbol { get; set; } = null!;
         public string Name { get; set; } = null!;
         public string LogoUrl { get; set; } = null!;
-        public ICollection<Game> Games { get; set; } = null!;
+        public ICollection<Game> GamesAsHome { get; set; } = null!;
+        public ICollection<Game> GamesAsAway { get; set; } = null!;
     }
 
     public class Game
@@ -18,8 +19,14 @@ namespace FantasyBets.Data
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public int Code { get; set; }
-        public Team Home { get; set; } = null!;
-        public Team Away { get; set; } = null!;
+
+        [ForeignKey(nameof(HomeTeamId))]
+        public Team HomeTeam { get; set; } = null!;
+        public int HomeTeamId { get; set; }
+        [ForeignKey(nameof(AwayTeamId))]
+        public Team AwayTeam { get; set; } = null!;
+        public int AwayTeamId { get; set; }
+
         public DateTime Time { get; set; }
         public int ScoreHome { get; set; }
         public int ScoreAway { get; set; }
