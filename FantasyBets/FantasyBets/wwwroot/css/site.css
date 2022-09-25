@@ -134,6 +134,10 @@ li a {
     text-decoration: none;
 }
 
+h2 a {
+    text-decoration: none;
+}
+
 a:link {
     color: inherit;
 }

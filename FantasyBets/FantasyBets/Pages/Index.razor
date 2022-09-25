@@ -1,12 +1,25 @@
 ﻿@page "/"
 @using FantasyBets.Data
 @using FantasyBets.Services
+@using Microsoft.AspNetCore.WebUtilities
 @inject IDbContextFactory<DataContext> DbContextFactory
+@inject NavigationManager NavigationManager;
+@inject Configuration Config;
 
 <PageTitle>Index</PageTitle>
 
 <div class="center">
-    <h2>Round 1, @String.Format("{0:00}", round.StartTime.Day) - @round.EndTime.ToShortDateString()</h2>
+    <h2>
+        @if (roundNumber > 1)
+        {
+            <a href="" @onclick="PreviousRound" @onclick:preventDefault>&#9204;</a>
+        }
+        Round @roundNumber, @String.Format("{0:00}", round.StartTime.Day) - @round.EndTime.ToShortDateString()
+        @if (roundNumber < roundsInSeason.Count())
+        {
+            <a href="" @onclick="NextRound" @onclick:preventDefault>&#9205;</a>
+        }
+    </h2>    
 </div>
 
 @foreach (var day in groupedGames)
@@ -42,21 +55,53 @@
 @code {
     IEnumerable<IGrouping<DateTime, Game>> groupedGames = null!;
     Round round = null!;
+    int roundNumber;
+    IEnumerable<Round> roundsInSeason = null!;
 
     protected override async Task OnInitializedAsync()
     {
         GlobalLock.Wait();
 
-        using var dbContext = await DbContextFactory.CreateDbContextAsync();
+        await LoadRound();
 
-        round = dbContext.Rounds!
+        await base.OnInitializedAsync();
+    }
+
+    private async Task LoadRound()
+    {        
+        using var dbContext = await DbContextFactory.CreateDbContextAsync();
+        var roundsInSeasonQueryable = dbContext.Rounds!
+            .Include(x => x.Season)
+            .Where(x => x.Season.Code == Config.CurrentSeasonCode);
+        roundsInSeason = roundsInSeasonQueryable.ToList();
+
+        if (roundNumber == 0)
+        {
+            var nextRound = roundsInSeasonQueryable.OrderBy(x => x.StartTime).First(x => x.EndTime.Date >= DateTime.Now.Date);
+            roundNumber = nextRound.Number;
+        }
+
+        round = roundsInSeasonQueryable
             .Include(x => x.Games).ThenInclude(x => x.HomeTeam)
-            .Include(x => x.Games).ThenInclude(x => x.AwayTeam).First();
+            .Include(x => x.Games).ThenInclude(x => x.AwayTeam)
+            .First(x => x.Number == roundNumber);
 
         groupedGames = round.Games
             .OrderBy(x => x.Time)
             .GroupBy(x => x.Time.Date);
-            
-        await base.OnInitializedAsync();
+    }
+
+    private async Task NextRound()
+    {
+        roundNumber++;
+        await LoadRound();
+        StateHasChanged();
+    }
+
+    private async Task PreviousRound()
+    {
+        roundNumber--;
+        await LoadRound();
+        StateHasChanged();
     }
 }

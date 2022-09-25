@@ -45,7 +45,8 @@ namespace FantasyBets.Services
                             break;
                         }
 
-                        await dbContext.Rounds!.AddAsync(round); 
+                        await dbContext.Rounds!.AddAsync(round);
+                        SetEntitiesState(round, dbContext);
                         await dbContext.SaveChangesAsync(cancellationToken);
 
                         i++;
@@ -59,6 +60,20 @@ namespace FantasyBets.Services
             finally
             {
                 GlobalLock.Unlock();
+            }
+        }
+
+        private void SetEntitiesState(Round round, DataContext dbContext)
+        {
+            if (round.Season.Id > 0)
+            {
+                dbContext.Entry(round.Season).State = EntityState.Unchanged;
+            }
+
+            foreach (var team in round.Games.Select(x => x.HomeTeam).Concat(round.Games.Select(x => x.AwayTeam)))
+            {
+                if (team.Id > 0)
+                    dbContext.Entry(team).State = EntityState.Unchanged;
             }
         }
 
