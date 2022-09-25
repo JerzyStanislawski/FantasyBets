@@ -29,21 +29,24 @@ namespace FantasyBets.Services
         {
             try
             {
-                using var db = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
+                GlobalLock.Lock();
 
+                using var db = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
                 if (!db.Rounds!.Any())
                 {
                     var i = 1;
                     while (true)
                     {
+                        using var dbContext = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
+
                         var round = await GetRound(i);
                         if (!round.Games.Any())
-                        {
-                            await db.SaveChangesAsync(cancellationToken);
+                        {                            
                             break;
                         }
 
-                        await db.Rounds!.AddAsync(round);
+                        await dbContext.Rounds!.AddAsync(round); 
+                        await dbContext.SaveChangesAsync(cancellationToken);
 
                         i++;
                     }
@@ -52,6 +55,10 @@ namespace FantasyBets.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error while updating round");
+            }
+            finally
+            {
+                GlobalLock.Unlock();
             }
         }
 

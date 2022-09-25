@@ -66,6 +66,7 @@ namespace FantasyBets.Logic.Parsers
                 throw new ArgumentException("Incorrect phase");
             round.Number = gameRound.Single()!;
             round.StartTime = round.Games.Select(x => x.Time).Min();
+            round.EndTime = round.Games.Select(x => x.Time).Max();
 
             return round;
         }

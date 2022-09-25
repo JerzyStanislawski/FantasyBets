@@ -1,24 +1,62 @@
 ﻿@page "/"
 @using FantasyBets.Data
+@using FantasyBets.Services
 @inject IDbContextFactory<DataContext> DbContextFactory
 
 <PageTitle>Index</PageTitle>
 
-<h2>Round 1</h2>
+<div class="center">
+    <h2>Round 1, @String.Format("{0:00}", round.StartTime.Day) - @round.EndTime.ToShortDateString()</h2>
+</div>
 
-<ul>
-    @foreach (var game in dbContext.Rounds!.Include(x => x.Games).ThenInclude(x => x.HomeTeam).Include(x => x.Games).ThenInclude(x => x.AwayTeam).First().Games)
-    {
-        <li>@game.HomeTeam.Name vs @game.AwayTeam.Name</li>
-    }
-</ul>
+@foreach (var day in groupedGames)
+{
+    <h4 class="offset-md-1">@day.Key.DayOfWeek.ToString()</h4>
+    <ul class="offset-md-2">
+        @foreach (var game in day)
+        {
+            <li>
+                <a href="/odds-@game.Code">
+                    <div class="data-row col-md-8">
+                        <div class="data-side">
+                            <div class="data-time">@game.Time.ToShortTimeString()</div>
+                            <div class="data-home-team">
+                                <span>@game.HomeTeam.Name</span>
+                                <img srcset="@game.HomeTeam.LogoUrl" width="40" height="40">
+                            </div>
+                        </div>
+                        <div class="data-center">vs</div>
+                        <div class="data-side">
+                            <div class="data-away-team">
+                                <img srcset="@game.AwayTeam.LogoUrl" width="40" height="40">
+                                <span>@game.AwayTeam.Name</span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </li>
+        }
+    </ul>
+}
 
 @code {
-    DataContext dbContext = null!;
+    IEnumerable<IGrouping<DateTime, Game>> groupedGames = null!;
+    Round round = null!;
+
     protected override async Task OnInitializedAsync()
     {
-        dbContext = await DbContextFactory.CreateDbContextAsync();
+        GlobalLock.Wait();
 
+        using var dbContext = await DbContextFactory.CreateDbContextAsync();
+
+        round = dbContext.Rounds!
+            .Include(x => x.Games).ThenInclude(x => x.HomeTeam)
+            .Include(x => x.Games).ThenInclude(x => x.AwayTeam).First();
+
+        groupedGames = round.Games
+            .OrderBy(x => x.Time)
+            .GroupBy(x => x.Time.Date);
+            
         await base.OnInitializedAsync();
     }
 }

@@ -56,4 +56,6 @@ app.UseAuthorization();
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
 
+GlobalLock.Lock();
+
 app.Run();
