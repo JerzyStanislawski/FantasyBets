@@ -6,6 +6,7 @@ namespace FantasyBets.Data
     {
         Task<Team?> GetTeamBySymbol(string symbol);
         Task<Season?> GetSeasonByCode(string code);
+        Task<IEnumerable<Game>> GetGamesByRound(int round);
     }
 
     public class DataProvider : IDataProvider
@@ -29,6 +30,18 @@ namespace FantasyBets.Data
             using var dbContext = _dbContextFactory.CreateDbContext();
 
             return await dbContext.Seasons!.SingleOrDefaultAsync(s => s.Code == code);
+        }
+
+        public async Task<IEnumerable<Game>> GetGamesByRound(int roundNumber)
+        {
+            using var dbContext = _dbContextFactory.CreateDbContext();
+
+            var round = await dbContext.Rounds!.FirstOrDefaultAsync(x => x.Number == roundNumber);
+
+            if (round is null)
+                throw new ArgumentException("Incorrect round number");
+
+            return round!.Games;
         }
     }
 }

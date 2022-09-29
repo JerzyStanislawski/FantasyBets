@@ -4,20 +4,21 @@ namespace FantasyBets.Model.Bets
 {
     public class GameBets
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         public Game Game { get; set; } = null!;
+        public IEnumerable<GameBet> Bets { get; set; } = Enumerable.Empty<GameBet>();
     }
 
     public class GameBet
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         public BetCodes BetCode { get; set; }
-        public IEnumerable<GameBetSelection> Selections { get; set; } = null!;
+        public IEnumerable<GameBetSelection> Selections { get; set; } = Enumerable.Empty<GameBetSelection>();
     }
 
     public class GameBetSelection
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         public string Name { get; set; } = null!;
         public decimal Odds { get; set; }
     }
