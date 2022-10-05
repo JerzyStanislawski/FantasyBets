@@ -11,7 +11,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
-builder.Services.AddServerSideBlazor();
+builder.Services.AddServerSideBlazor()
+    .AddCircuitOptions(options => { options.DetailedErrors = true; });
 
 builder.Services.AddDbContextFactory<DataContext>(opt =>
     opt.UseSqlite($"Data Source={nameof(DataContext.FantasyDb)}.db"));
@@ -29,10 +30,16 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options =>
 builder.Services.AddLogging(options => options.AddConsole());
 
 builder.Services.AddHostedService<UpdateRoundsHostedService>();
+builder.Services.AddHostedService<UpdateBetsHostedService>();
 
 builder.Services.AddHttpClient();
+builder.Services.AddHttpClient(nameof(UpdateBetsHostedService));
 builder.Services.AddSingleton<IDataProvider, DataProvider>();
+builder.Services.AddSingleton<IBetsProvider, BetsProvider>();
+builder.Services.AddSingleton<CurrentRoundProvider>();
 builder.Services.AddSingleton<RoundParser>();
+builder.Services.AddSingleton<RoundBetsParser>();
+builder.Services.AddSingleton<GameBetsParser>();
 builder.Services.AddSingleton(builder.Configuration.Get<Configuration>());
 
 var app = builder.Build();

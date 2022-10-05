@@ -36,7 +36,10 @@ namespace FantasyBets.Data
         {
             using var dbContext = _dbContextFactory.CreateDbContext();
 
-            var round = await dbContext.Rounds!.FirstOrDefaultAsync(x => x.Number == roundNumber);
+            var round = await dbContext.Rounds!
+                .Include(x => x.Games).ThenInclude(x => x.HomeTeam)
+                .Include(x => x.Games).ThenInclude(x => x.AwayTeam)
+                .FirstOrDefaultAsync(x => x.Number == roundNumber);
 
             if (round is null)
                 throw new ArgumentException("Incorrect round number");

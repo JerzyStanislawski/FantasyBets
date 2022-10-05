@@ -5,6 +5,7 @@
 @inject IDbContextFactory<DataContext> DbContextFactory
 @inject NavigationManager NavigationManager;
 @inject Configuration Config;
+@inject CurrentRoundProvider CurrentRoundProvider;
 
 <PageTitle>Index</PageTitle>
 
@@ -29,23 +30,8 @@
         @foreach (var game in day)
         {
             <li>
-                <a href="/odds-@game.Code">
-                    <div class="data-row col-md-8">
-                        <div class="data-side">
-                            <div class="data-time">@game.Time.ToShortTimeString()</div>
-                            <div class="data-home-team">
-                                <span>@game.HomeTeam.Name</span>
-                                <img srcset="@game.HomeTeam.LogoUrl" width="40" height="40">
-                            </div>
-                        </div>
-                        <div class="data-center">vs</div>
-                        <div class="data-side">
-                            <div class="data-away-team">
-                                <img srcset="@game.AwayTeam.LogoUrl" width="40" height="40">
-                                <span>@game.AwayTeam.Name</span>
-                            </div>
-                        </div>
-                    </div>
+                <a href="/bets/@game.Code">
+                    <SingleGame Game="@game" />
                 </a>
             </li>
         }
@@ -77,8 +63,7 @@
 
         if (roundNumber == 0)
         {
-            var nextRound = roundsInSeasonQueryable.OrderBy(x => x.StartTime).First(x => x.EndTime.Date >= DateTime.Now.Date);
-            roundNumber = nextRound.Number;
+            roundNumber = await CurrentRoundProvider.GetCurrentRoundNumber();
         }
 
         round = roundsInSeasonQueryable

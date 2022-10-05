@@ -1,0 +1,49 @@
+﻿@page "/bets/{gameCode:int}"
+@using FantasyBets.Data
+@using FantasyBets.Model.Bets
+@using FantasyBets.Services
+
+@inject IBetsProvider BetsProvider;
+@inject NavigationManager NavigationManager;
+@inject IDbContextFactory<DataContext> DbContextFactory
+
+
+<div class="offset-md-2">
+    <SingleGame Game="@game" DisplayDate=true />
+</div>
+
+@if (bets is null)
+{
+    <div class="center">
+        <h4 class="validation-message">No bets for selected game yet.</h4>
+    </div>
+}
+
+
+@code {
+    GameBets? bets = null!;
+    Game game = null!;
+
+    [Parameter]
+    public int GameCode { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        bets = BetsProvider.Bets.FirstOrDefault(x => x.Game.Code == GameCode);
+
+        if (bets is null)
+        {
+            using var dbContext = await DbContextFactory.CreateDbContextAsync();
+            game = dbContext.Rounds!.SelectMany(x => x.Games)
+                .Include(x => x.HomeTeam)
+                .Include(x => x.AwayTeam)
+                .First(x => x.Code == GameCode);
+        }
+        else
+        {
+            game = bets.Game;
+        }
+
+        await base.OnInitializedAsync();
+    }
+}

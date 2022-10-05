@@ -20,7 +20,7 @@ namespace FantasyBets.Logic.Parsers
         {
             var bets = JsonSerializer.Deserialize<JsonBets>(betsPayload, new JsonSerializerOptions
             {
-                PropertyNameCaseInsensitive = true
+                PropertyNameCaseInsensitive = true, 
             });
             if (bets is null)
                 throw new ArgumentNullException(nameof(betsPayload));
@@ -39,10 +39,12 @@ namespace FantasyBets.Logic.Parsers
             var marketBets = new List<GameBet>();            
             foreach (var bet in bets.GroupedMarkets.SelectMany(x => x.Markets))
             {
+                if (!Enum.TryParse<BetCodes>(bet.MarketTypeCode, out var betCode))
+                    continue;
                 marketBets.Add(new GameBet
                 {
                     Id = bet.Id,
-                    BetCode = bet.MarketTypeCode,
+                    BetCode = betCode,
                     Selections = bet.Selections.SelectMany(x => x).Select(x => new GameBetSelection
                     {
                         Id = x.Id,
@@ -81,7 +83,7 @@ namespace FantasyBets.Logic.Parsers
         {
             public long Id { get; set; }
             [JsonPropertyName("market_type_code")]
-            public BetCodes MarketTypeCode { get; set; }
+            public string MarketTypeCode { get; set; } = null!;
             public IEnumerable<IEnumerable<JsonSelection>> Selections { get; set; } = 
                 Enumerable.Empty<IEnumerable<JsonSelection>>();
         }

@@ -1,0 +1,24 @@
+﻿@using FantasyBets.Data
+<div class="data-row col-md-8">
+    <div class="data-side">
+        <div class="data-time">@(DisplayDate ? Game.Time.ToString("dd MMMM, HH:mm") : Game.Time.ToShortTimeString())</div>
+        <div class="data-home-team">
+            <span>@Game.HomeTeam.Name</span>
+            <img srcset="@Game.HomeTeam.LogoUrl" width="40" height="40">
+        </div>
+    </div>
+    <div class="data-center">vs</div>
+    <div class="data-side">
+        <div class="data-away-team">
+            <img srcset="@Game.AwayTeam.LogoUrl" width="40" height="40">
+            <span>@Game.AwayTeam.Name</span>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public Game Game { get; set; } = null!;
+    [Parameter]
+    public bool DisplayDate { get; set; }
+}

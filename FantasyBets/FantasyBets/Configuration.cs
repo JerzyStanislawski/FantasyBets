@@ -11,5 +11,7 @@
     public class Feeds
     {
         public string Schedule { get; set; } = null!;
+        public string RoundBets { get; set; } = null!;
+        public string GameBets { get; set; } = null!;
     }
 }

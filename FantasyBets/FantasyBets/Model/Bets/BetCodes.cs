@@ -78,5 +78,20 @@ namespace FantasyBets.Model.Bets
         TotalPointsThirdQuarterEvenOrOdd, // Punkty 3. kwarty N/P
         [EnumMember(Value = "Bkb_4oe")]
         TotalPointsFourthQuarterEvenOrOdd, // Punkty 4. kwarty N/P
+        [EnumMember(Value = "Bkb_WTO")] 
+        WinnerAndTotalPoints, // Zwycięzca i liczba punktów"
+        [EnumMember(Value = "Bkb_TPB")]
+        TotalPointsRange, // Łączna liczba punktów - zakres
+        [EnumMember(Value = "Bkb_Fhw")]
+        FirstHalfWinner, // Zwycięzca połowy
+        [EnumMember(Value = "Bkb_6Wmg")]
+        Winner6, //Różnica zwycięstwa 6-drogowo"
+        [EnumMember(Value = "Bkb_Hth")]
+        FirstHalfWinnerHandicap, // Wynik połowy handicap"
+        [EnumMember(Value = "Bkb_Htr")]
+        FirstHalfResult, // Wynik połowy"
+        [EnumMember(Value = "")]
+        FirstHalfResul2t, // Wynik połowy"
+
     }
 }
