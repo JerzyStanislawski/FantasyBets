@@ -1,92 +1,88 @@
 ﻿@page "/"
+@using FantasyBets.Components
 @using FantasyBets.Data
 @using FantasyBets.Services
 @using Microsoft.AspNetCore.WebUtilities
 @inject IDbContextFactory<DataContext> DbContextFactory
-@inject NavigationManager NavigationManager;
-@inject Configuration Config;
-@inject CurrentRoundProvider CurrentRoundProvider;
+@inject NavigationManager NavigationManager
+@inject Configuration Config
+@inject CurrentRoundProvider CurrentRoundProvider
+@inject StateContainer StateContainer
 
 <PageTitle>Index</PageTitle>
 
-<div class="center">
-    <h2>
-        @if (roundNumber > 1)
-        {
-            <a href="" @onclick="PreviousRound" @onclick:preventDefault>&#9204;</a>
-        }
-        Round @roundNumber, @String.Format("{0:00}", round.StartTime.Day) - @round.EndTime.ToShortDateString()
-        @if (roundNumber < roundsInSeason.Count())
-        {
-            <a href="" @onclick="NextRound" @onclick:preventDefault>&#9205;</a>
-        }
-    </h2>    
+<div class="round-header">
+    <RoundHeader RoundLoadedEvent=@RoundLoaded />
+    <div class="display-end user-points">
+        <div>Round points: <span class="bet-odds">@roundPoints</span></div>
+        <div>Total points: <span class="bet-odds">@totalPoints</span></div>
+    </div>
 </div>
 
-@foreach (var day in groupedGames)
+@if (groupedGames is not null)
 {
-    <h4 class="offset-md-1">@day.Key.DayOfWeek.ToString()</h4>
-    <ul class="offset-md-2">
-        @foreach (var game in day)
-        {
-            <li>
-                <a href="/bets/@game.Code">
-                    <SingleGame Game="@game" />
-                </a>
-            </li>
-        }
-    </ul>
+    @foreach (var day in groupedGames)
+    {
+        <h4 class="col-md-1">@day.Key.DayOfWeek.ToString()</h4>
+        <ul class="col-md-1">
+            @foreach (var game in day)
+            {
+                <li>
+                    <div class="inline">
+                        <a href="@GenerateGameLink(game)">
+                            <SingleGame Game="@game" />
+                        </a>
+                        <SingleBet BetSelection="@game.BetSelections.FirstOrDefault(x => x.User.Id == StateContainer.CurrentUser?.Id)" />
+                    </div>
+                </li>
+            }
+        </ul>
+    }
 }
 
 @code {
+    [CascadingParameter] 
+    protected Task<AuthenticationState> AuthStat { get; set; } = null!;
+
     IEnumerable<IGrouping<DateTime, Game>> groupedGames = null!;
-    Round round = null!;
-    int roundNumber;
-    IEnumerable<Round> roundsInSeason = null!;
+
+    decimal roundPoints;
+    decimal totalPoints;
 
     protected override async Task OnInitializedAsync()
     {
         GlobalLock.Wait();
 
-        await LoadRound();
-
         await base.OnInitializedAsync();
     }
 
-    private async Task LoadRound()
+    private void RoundLoaded(Round round)
     {        
-        using var dbContext = await DbContextFactory.CreateDbContextAsync();
-        var roundsInSeasonQueryable = dbContext.Rounds!
-            .Include(x => x.Season)
-            .Where(x => x.Season.Code == Config.CurrentSeasonCode);
-        roundsInSeason = roundsInSeasonQueryable.ToList();
-
-        if (roundNumber == 0)
-        {
-            roundNumber = await CurrentRoundProvider.GetCurrentRoundNumber();
-        }
-
-        round = roundsInSeasonQueryable
-            .Include(x => x.Games).ThenInclude(x => x.HomeTeam)
-            .Include(x => x.Games).ThenInclude(x => x.AwayTeam)
-            .First(x => x.Number == roundNumber);
-
         groupedGames = round.Games
             .OrderBy(x => x.Time)
             .GroupBy(x => x.Time.Date);
-    }
 
-    private async Task NextRound()
-    {
-        roundNumber++;
-        await LoadRound();
+        SetUserPoints(round);
+
         StateHasChanged();
     }
 
-    private async Task PreviousRound()
+    private void SetUserPoints(Round round)
     {
-        roundNumber--;
-        await LoadRound();
-        StateHasChanged();
+        roundPoints = round.Games.SelectMany(x => x.BetSelections.Where(b => b.UserId == StateContainer.CurrentUser?.Id))
+                                 .Where(x => x.Result == BetResult.Success)
+                                 .Sum(x => x.Odds);
+        var total = StateContainer.CurrentUser?.BetSelections
+                                    .Where(x => x.Game.Round.Season.Code == Config.CurrentSeasonCode && x.Result == BetResult.Success)
+                                    .Sum(x => x.Odds);
+        totalPoints = total.HasValue ? total.Value : 0m;
+    }
+
+    private string GenerateGameLink(Game game)
+    {
+        if (game.Time > DateTime.UtcNow)
+            return $"/bets/{game.Code}";
+        else
+            return $"https://www.euroleaguebasketball.net/euroleague/game-center/2022-23/{game.HomeTeam.Name.Replace(' ', '-')}-{game.AwayTeam.Name.Replace(' ', '-')}/{Config.CurrentSeasonCode}/{game.Code}/#boxscore";
     }
 }

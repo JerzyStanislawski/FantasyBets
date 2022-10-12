@@ -3,6 +3,7 @@ using System;
 using FantasyBets.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FantasyBets.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20221007103330_bets_game_relation")]
+    partial class bets_game_relation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.9");
@@ -35,9 +37,6 @@ namespace FantasyBets.Migrations
 
                     b.Property<decimal>("Odds")
                         .HasColumnType("TEXT");
-
-                    b.Property<int>("Result")
-                        .HasColumnType("INTEGER");
 
                     b.Property<string>("UserId")
                         .IsRequired()
@@ -69,7 +68,7 @@ namespace FantasyBets.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("BetTypes");
+                    b.ToTable("BetType");
                 });
 
             modelBuilder.Entity("FantasyBets.Data.FantasyUser", b =>
@@ -383,21 +382,21 @@ namespace FantasyBets.Migrations
             modelBuilder.Entity("FantasyBets.Data.BetSelection", b =>
                 {
                     b.HasOne("FantasyBets.Data.BetType", "BetType")
-                        .WithMany("BetSelections")
+                        .WithMany()
                         .HasForeignKey("BetTypeId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("FantasyBets.Data.Game", "Game")
                         .WithMany("BetSelections")
                         .HasForeignKey("GameId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("FantasyBets.Data.FantasyUser", "User")
                         .WithMany("BetSelections")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("BetType");
@@ -494,11 +493,6 @@ namespace FantasyBets.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("FantasyBets.Data.BetType", b =>
-                {
-                    b.Navigation("BetSelections");
                 });
 
             modelBuilder.Entity("FantasyBets.Data.FantasyUser", b =>

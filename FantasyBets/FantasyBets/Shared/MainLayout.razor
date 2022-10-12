@@ -1,7 +1,11 @@
-﻿@inherits LayoutComponentBase
+﻿@using FantasyBets.Data
+@using FantasyBets.Services
+
+@inherits LayoutComponentBase
 @inject NavigationManager NavigationManager
-@inject SignInManager<IdentityUser> SignInManager
-@inject UserManager<IdentityUser> UserManager
+@inject StateContainer StateContainer
+@inject UserManager<FantasyUser> UserManager
+@inject IDbContextFactory<DataContext> DbContextFactory
 
 <PageTitle>FantasyBets</PageTitle>
 
@@ -23,7 +27,8 @@
 </div>
 
 @code{
-    [CascadingParameter] protected Task<AuthenticationState> AuthStat { get; set; } = null!;
+    [CascadingParameter] 
+    protected Task<AuthenticationState> AuthStat { get; set; } = null!;
     System.Security.Claims.ClaimsPrincipal user = null!;
 
     protected async override Task OnInitializedAsync()
@@ -31,15 +36,27 @@
         base.OnInitialized();
 
         if (AuthStat is null)
-            return;
+            throw new InvalidOperationException("Could not load authentication state.");;
 
         user = (await AuthStat).User;
         if (user is null || user.Identity is null)
-            return;
-
+            throw new InvalidOperationException("Could not get user identity.");
+                    
         if(!user.Identity.IsAuthenticated)
         {
             NavigationManager.NavigateTo($"/Identity/Account/Login");
         }
+                
+        var id = UserManager.GetUserId(user);
+
+        using var dbContext = await DbContextFactory.CreateDbContextAsync();
+        StateContainer.CurrentUser = await dbContext.Users
+            .Include(x => x.BetSelections)
+            .ThenInclude(x => x.BetType)
+            .Include(x => x.BetSelections)
+            .ThenInclude(x => x.Game)
+            .ThenInclude(x => x.Round)
+            .ThenInclude(x => x.Season)
+            .FirstAsync(x => x.Id == id);
     }
 }

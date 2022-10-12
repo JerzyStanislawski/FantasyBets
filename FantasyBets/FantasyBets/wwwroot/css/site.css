@@ -14,8 +14,28 @@ a, .btn-link {
 
 .btn-primary {
     color: #fff;
-    background-color: #1b6ec2;
-    border-color: #1861ac;
+    background-color: #aa4b07;
+    border-color: #9a3b07;
+}
+
+.btn-secondary {
+    color: #fff;
+    background-color: #ca6b27;
+    border-color: #9a3b07;
+}
+
+.btn-check:focus + .btn-primary, .btn-primary:focus, .btn-primary:hover {
+    color: #fff;
+    background-color: #aa4b07;
+    border-color: #9a3b07;
+    box-shadow: 0,0,0,0
+}
+
+.btn-check:focus + .btn-secondary, btn-secondary:focus, .btn-secondary:hover {
+    color: #fff;
+    background-color: #ca6b27;
+    border-color: #9a3b07;
+    box-shadow: 0,0,0,0
 }
 
 .content {
@@ -68,51 +88,40 @@ article {
 }
 
 .data-row {
-    grid-template-columns: 1fr 90px 1fr;
-    display: grid;
-    grid-column-gap: 20px;
-    grid-template-rows: minmax(44px,min-content);
-    -webkit-align-items: center;
+    display: inline-flex;
     align-items: center;
     padding: 20px 40px;
     font-size: 14px;
     font-weight: 700;
 }
 
-.data-side {
-    grid-auto-flow: column;
-    grid-column-gap: 20px;
-    display: grid;
-}
-
 .data-center {
-    display: inline-grid;
-    grid-template-areas: "vs";
-    margin: auto;
-    border: none;
+    display: inline-flex;
+    width: 3rem;
+    align-items: center;
+    justify-content: center;
 }
 
 .data-time {
-    display: grid;
-    align-self: center;
-    grid-row-gap: 5px;
+    display: inline-flex;
+    width: 8rem;
+    align-items: center;
+    justify-content: center;
 }
 
 .data-home-team {
-    justify-self: right;
-    display: grid;
-    justify-content: center;
-    grid-template-areas: "name logo";
-    grid-column-gap: 15px;
+    display: inline-flex;
+    width: 20rem;
+    padding: 0rem 1rem;
+    justify-content: flex-end;
     align-items: center;
 }
 
 .data-away-team {
-    justify-self: left;
-    display: grid;
-    justify-content: center;
-    grid-template-areas: "logo name";
-    grid-column-gap: 15px;
+    display: inline-flex;
+    width: 20rem;
+    padding: 0rem 1rem;
+    justify-content: flex-start;
     align-items: center;
 }
 
@@ -128,7 +137,7 @@ ul {
 
 li a {
     margin: 0px;
-    display: block;
+    display: inline-block;
     width: 100%;
     height: 100%;
     text-decoration: none;
@@ -149,4 +158,41 @@ a:visited {
 .center {
     width: 50%;
     margin: 0 auto;
+}
+
+.round-header {
+    display: inline-flex;
+    margin-left: 310px;
+    min-width: 760px;
+}
+
+.inline {
+    display: inline-flex;
+    align-items: center;
+}
+
+.bet-selection {
+    min-width: 25rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.bet-odds {
+    color: darkred;
+}
+
+.display-end {
+    margin-left: auto;
+}
+
+.user-points {
+    font-size: 1.0rem;
+    font-weight: 700;
+    min-width: 150px;
+}
+
+.text-right {
+    text-align: right;
+    margin-right: 1rem;
+    justify-content: flex-end;
 }

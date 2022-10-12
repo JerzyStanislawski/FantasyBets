@@ -39,18 +39,19 @@ namespace FantasyBets.Logic.Parsers
             var marketBets = new List<GameBet>();            
             foreach (var bet in bets.GroupedMarkets.SelectMany(x => x.Markets))
             {
-                if (!Enum.TryParse<BetCodes>(bet.MarketTypeCode, out var betCode))
+                if (!BetCodesMap.Map.TryGetValue(bet.MarketTypeCode, out var betCode))
                     continue;
                 marketBets.Add(new GameBet
                 {
                     Id = bet.Id,
                     BetCode = betCode,
-                    Selections = bet.Selections.SelectMany(x => x).Select(x => new GameBetSelection
+                    Descripion = bet.Name,
+                    Selections = bet.Selections.Select(p => p.Select(x => new GameBetSelection
                     {
                         Id = x.Id,
                         Name = x.Name,
                         Odds = x.Odds
-                    })
+                    }))
                 });
             }
             gameBets.Bets = marketBets;
@@ -84,6 +85,7 @@ namespace FantasyBets.Logic.Parsers
             public long Id { get; set; }
             [JsonPropertyName("market_type_code")]
             public string MarketTypeCode { get; set; } = null!;
+            public string Name { get; set; } = null!;
             public IEnumerable<IEnumerable<JsonSelection>> Selections { get; set; } = 
                 Enumerable.Empty<IEnumerable<JsonSelection>>();
         }

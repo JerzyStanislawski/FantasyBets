@@ -2,9 +2,6 @@ using FantasyBets;
 using FantasyBets.Data;
 using FantasyBets.Logic.Parsers;
 using FantasyBets.Services;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,7 +14,7 @@ builder.Services.AddServerSideBlazor()
 builder.Services.AddDbContextFactory<DataContext>(opt =>
     opt.UseSqlite($"Data Source={nameof(DataContext.FantasyDb)}.db"));
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options =>
+builder.Services.AddDefaultIdentity<FantasyUser>(options =>
 {
     options.SignIn.RequireConfirmedEmail = false;
     options.Password.RequireLowercase = false;
@@ -41,6 +38,9 @@ builder.Services.AddSingleton<RoundParser>();
 builder.Services.AddSingleton<RoundBetsParser>();
 builder.Services.AddSingleton<GameBetsParser>();
 builder.Services.AddSingleton(builder.Configuration.Get<Configuration>());
+builder.Services.AddSingleton<BettingService>();
+
+builder.Services.AddScoped<StateContainer>();
 
 var app = builder.Build();
 

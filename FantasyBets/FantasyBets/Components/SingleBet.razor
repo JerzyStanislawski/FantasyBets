@@ -1,0 +1,42 @@
+﻿@using FantasyBets.Data
+
+@if (BetSelection is null)
+{
+    <div class="bet-selection">(No bet)</div>
+}
+else
+{
+    <div class="bet-selection inline">
+        <div>
+            <div>@BetSelection.BetType.Descripion</div>
+            <div>@BetSelection.Name</div>
+            <div>Kurs: <span class="bet-odds">@BetSelection.Odds</span></div>
+        </div>
+        <img srcset="@IconSource()" width="40" height="40" class="display-end">
+    </div>
+}
+
+@code {
+    [Parameter]
+    public BetSelection? BetSelection { get; set; }
+
+    private string IconSource()
+    {
+        if (BetSelection is null)
+            throw new ArgumentException("Bet not set");
+
+        switch (BetSelection!.Result)
+        {
+            case BetResult.Success:
+                return "/images/tick.png";
+            case BetResult.Fail:
+                return "/images/ban.png";
+            case BetResult.Pending:
+                return "/images/wait.png";
+            case BetResult.Cancelled:
+                return "/images/cancel.png";
+            default:
+                throw new ArgumentException("Unknown bet result");
+        }
+    }
+}

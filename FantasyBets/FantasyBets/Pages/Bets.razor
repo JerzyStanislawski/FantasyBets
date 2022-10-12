@@ -1,4 +1,5 @@
 ﻿@page "/bets/{gameCode:int}"
+@using FantasyBets.Components
 @using FantasyBets.Data
 @using FantasyBets.Model.Bets
 @using FantasyBets.Services
@@ -6,18 +7,48 @@
 @inject IBetsProvider BetsProvider;
 @inject NavigationManager NavigationManager;
 @inject IDbContextFactory<DataContext> DbContextFactory
+@inject StateContainer StateContainer
+@inject BettingService BettingService
 
-
-<div class="offset-md-2">
+<div class="sticky bet_group">
     <SingleGame Game="@game" DisplayDate=true />
 </div>
 
-@if (bets is null)
-{
-    <div class="center">
-        <h4 class="validation-message">No bets for selected game yet.</h4>
-    </div>
-}
+<div class="bets_main">
+    @if (game.Time < DateTime.UtcNow)
+    {
+        <div class="center">
+            <h4 class="validation-message bet_message">Betting not allowed.</h4>
+        </div>        
+    }
+    else if (bets is null)
+    {
+        <div class="center">
+            <h4 class="validation-message bet_message">No bets for selected game yet.</h4>
+        </div>
+    }
+    else
+    {
+        @foreach (var bet in bets.Bets)
+        {
+            <div class="bet_group">
+                <h2 class="bet_description">@bet.Descripion</h2>
+                @foreach (var selectionGroup in bet.Selections)
+                {
+                    <div>
+                        @foreach (var selection in selectionGroup)
+                        {
+                            <div class="bet_item">
+                                <div class="bet_item_description bet_font">@selection.Name</div>
+                                <div class="bet_item_odds bet_font" @onclick="@(() => SelectionClicked(@selection, bet))">@selection.Odds</div>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        }
+    }
+</div>
 
 
 @code {
@@ -45,5 +76,17 @@
         }
 
         await base.OnInitializedAsync();
+    }
+
+    private async Task SelectionClicked(GameBetSelection selection, GameBet gameBet)
+    {
+        if (game.Time < DateTime.UtcNow)
+        {
+            NavigationManager.NavigateTo($"/bets/{GameCode}");
+        }
+
+        await BettingService.PlaceBet(selection, gameBet, game, StateContainer.CurrentUser);
+
+        NavigationManager.NavigateTo("/");
     }
 }

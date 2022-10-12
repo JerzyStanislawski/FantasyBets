@@ -3,6 +3,7 @@ using System;
 using FantasyBets.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FantasyBets.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20221007114440_betTypes")]
+    partial class betTypes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.9");
@@ -35,9 +37,6 @@ namespace FantasyBets.Migrations
 
                     b.Property<decimal>("Odds")
                         .HasColumnType("TEXT");
-
-                    b.Property<int>("Result")
-                        .HasColumnType("INTEGER");
 
                     b.Property<string>("UserId")
                         .IsRequired()

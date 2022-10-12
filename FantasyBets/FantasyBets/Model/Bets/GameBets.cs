@@ -13,7 +13,8 @@ namespace FantasyBets.Model.Bets
     {
         public long Id { get; set; }
         public BetCodes BetCode { get; set; }
-        public IEnumerable<GameBetSelection> Selections { get; set; } = Enumerable.Empty<GameBetSelection>();
+        public string Descripion { get; set; } = null!;
+        public IEnumerable<IEnumerable<GameBetSelection>> Selections { get; set; } = Enumerable.Empty<IEnumerable<GameBetSelection>>();
     }
 
     public class GameBetSelection

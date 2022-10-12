@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using FantasyBets.Model.Bets;
+using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FantasyBets.Data
@@ -31,6 +33,7 @@ namespace FantasyBets.Data
         public int ScoreHome { get; set; }
         public int ScoreAway { get; set; }
         public Round Round { get; set; } = null!;
+        public ICollection<BetSelection> BetSelections { get; set; } = null!;
     }
 
     public class Round
@@ -55,17 +58,44 @@ namespace FantasyBets.Data
         public ICollection<Round> Rounds { get; set; } = null!;
     }
 
-    public class User
+    public class FantasyUser : IdentityUser
+    {
+        public ICollection<BetSelection> BetSelections { get; set; } = null!;
+    }
+
+    public class BetType
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        [DataType(DataType.EmailAddress)]
-        public string Email { get; set; } = null!;
-
+        public BetCodes BetCode { get; set; }
+        public string Descripion { get; set; } = null!;
+        public ICollection<BetSelection> BetSelections { get; set; } = null!;
     }
 
-    public class Odds
+    public class BetSelection
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
+        public string Name { get; set; } = null!;
+        public decimal Odds { get; set; }
+        public BetType BetType { get; set; } = null!;
 
+        [ForeignKey(nameof(UserId))]
+        public FantasyUser User { get; set; } = null!;
+        public string UserId { get; set; } = null!;
+
+        [ForeignKey(nameof(GameId))]
+        public Game Game { get; set; } = null!;
+        public int GameId { get; set; }
+
+        public BetResult Result { get; set; } = BetResult.Pending;
+    }
+
+    public enum BetResult
+    {
+        Success,
+        Fail,
+        Pending,
+        Cancelled
     }
 }

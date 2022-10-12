@@ -1,97 +1,115 @@
-﻿using System.Runtime.Serialization;
+﻿using FantasyBets.Extensions;
+using System.Collections.Immutable;
 using System.Text.Json.Serialization;
 
 namespace FantasyBets.Model.Bets
 {
-    [JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumMemberConverter))]
     public enum BetCodes
     {
-        [EnumMember(Value = "Bkb_Mr6")]
+        [JsonPropertyName("Bkb_Mr6")]
         Winner, // Zwycięzca meczu
-        [EnumMember(Value = "Bkb_Tpt")]
+        [JsonPropertyName("Bkb_Tpt")]
         TotalPoints, // Suma punktów
-        [EnumMember(Value = "Bkb_Mrs")]
+        [JsonPropertyName("Bkb_Mrs")]
         GameResult, // Wynik meczu
-        [EnumMember(Value = "Bkb_Han")]
+        [JsonPropertyName("Bkb_Han")]
         Handicap, // Wynik handicap
-        [EnumMember(Value = "Bkb_Htp")]
+        [JsonPropertyName("Bkb_Htp")]
         TotalPointsHome, // Suma punktów gospodarzy
-        [EnumMember(Value = "Bkb_Atp")]
+        [JsonPropertyName("Bkb_Atp")]
         TotalPointsAway, // Suma punktów gości
-        [EnumMember(Value = "Bkb_Ptp2")]
+        [JsonPropertyName("Bkb_Ptp2")]
         PlayerTotalPoints, // Łączne punkty gracza
-        [EnumMember(Value = "Bkb_Ppf2")]
+        [JsonPropertyName("Bkb_Ppf2")]
         PlayerPerformance, // Łączny wynik gracza (punkty + zbiórki + asysty)
-        [EnumMember(Value = "Bkb_20p")]
+        [JsonPropertyName("Bkb_20p")]
         PlayerScores20OrMore, // Zawodnik zdobędzie 20 lub więcej punktów
-        [EnumMember(Value = "Bkb_25p")]
+        [JsonPropertyName("Bkb_25p")]
         PlayerScores25OrMore, // Zawodnik zdobędzie 25 lub więcej punktów
-        [EnumMember(Value = "Bkb_30p")]
+        [JsonPropertyName("Bkb_30p")]
         PlayerScores30OrMore, // Zawodnik zdobędzie 30 lub więcej punktów
-        [EnumMember(Value = "Bkb_Tsc")]
+        [JsonPropertyName("Bkb_Tsc")]
         BestScorer, // Najlepszy strzelec
-        [EnumMember(Value = "Bkb_Pta2")]
+        [JsonPropertyName("Bkb_Pta2")]
         PlayerTotalAssists, // Łączna liczba asyst
-        [EnumMember(Value = "Bkb_Ptr2")]
+        [JsonPropertyName("Bkb_Ptr2")]
         PlayerTotalRebounds, // Łączna liczba zbiórek
-        [EnumMember(Value = "Bkb_PnA")]
+        [JsonPropertyName("Bkb_PnA")]
         PlayerTotalPointsAndAssists, // Punkty i Asysty Gracza
-        [EnumMember(Value = "Bkb_PnR")]
+        [JsonPropertyName("Bkb_PnR")]
         PlayerTotalPointsAndRebounds, // Punkty i zbiórki gracza
-        [EnumMember(Value = "Bkb_20DC")]
+        [JsonPropertyName("Bkb_20DC")]
         OneOfPlayersScores20OrMore, // Podwójna szansa gracz zdobędzie co najmniej 20pkt
-        [EnumMember(Value = "Bkb_25DC")]
+        [JsonPropertyName("Bkb_25DC")]
         OneOfPlayersScores25OrMore, // Podwójna szansa gracz zdobędzie co najmniej 25pkt
-        [EnumMember(Value = "Bkb_Stw")]
+        [JsonPropertyName("Bkb_Stw")]
         PlayerScres20OrMoreAndHisTeamWins, // Gracz zdobędzie 20 punktów lub więcej i jego zespół wygra
-        [EnumMember(Value = "Bkb_25W")]
+        [JsonPropertyName("Bkb_25W")]
         PlayerScres25OrMoreAndHisTeamWins, // Gracz zdobędzie 25 punktów lub więcej i jego zespół wygra
-        [EnumMember(Value = "Bkb_30W")]
+        [JsonPropertyName("Bkb_30W")]
         PlayerScres30OrMoreAndHisTeamWins, // Gracz zdobędzie 30 punktów lub więcej i jego zespół wygra
-        [EnumMember(Value = "Bkb_Mot")]
+        [JsonPropertyName("Bkb_Mot")]
         Overtime, // Dogrywka (Tak/Nie)
-        [EnumMember(Value = "Bkb_Htf")]
+        [JsonPropertyName("Bkb_Htf")]
         WinnerHalfAndTotal, // Połowa / Cały
-        [EnumMember(Value = "Bkb_3Wmg")]
+        [JsonPropertyName("Bkb_3Wmg")]
         ThreeWayDifference, // Różnica zwycięstwa 3-drogowo
-        [EnumMember(Value = "Bkb_Htt")]
+        [JsonPropertyName("Bkb_Htt")]
         TotalPointsFirstHalf, // Suma punktów 1. połowy
-        [EnumMember(Value = "Bkb_1HHo")]
+        [JsonPropertyName("Bkb_1HHo")]
         TotalPointsFirstHalfHome, // Połowa - liczba punktów gospodarzy
-        [EnumMember(Value = "Bkb_1HAw")]
+        [JsonPropertyName("Bkb_1HAw")]
         TotalPointsFirstHalfAway, // Połowa - liczba punktów gości
-        [EnumMember(Value = "Bkb_1QHo")]
+        [JsonPropertyName("Bkb_1QHo")]
         TotalPointsFirstQuarterHome, // Pierwsza kwarta - liczba punktów gospodarzy
-        [EnumMember(Value = "Bkb_1QAw")]
+        [JsonPropertyName("Bkb_1QAw")]
         TotalPointsFirstQuarterAway, // Suma punktów zespołu gości w pierwszej kwarcie
-        [EnumMember(Value = "Bkb_Poe")]
+        [JsonPropertyName("Bkb_Poe")]
         TotalPointsEvenOrOdd, // Parzysta / nieparzysta suma punktów meczu
-        [EnumMember(Value = "Bkb_Hoe")]
+        [JsonPropertyName("Bkb_Hoe")]
         TotalPointsFirstHalfEvenOrOdd, // Parzysta / nieparzysta suma punktów 1. połowy
-        [EnumMember(Value = "Bkb_2ho")]
+        [JsonPropertyName("Bkb_2ho")]
         TotalPointsSecondHalfEvenOrOdd, // Punkty w 2. połowie N/P
-        [EnumMember(Value = "Bkb_Qoe")]
+        [JsonPropertyName("Bkb_Qoe")]
         TotalPointsFirstQuarterEvenOrOdd, // Parzysta / nieparzysta suma punktów 1. kwarty
-        [EnumMember(Value = "Bkb_2oe")]
+        [JsonPropertyName("Bkb_2oe")]
         TotalPointsSecondQuarterEvenOrOdd, // Punkty 2. kwarty N/P
-        [EnumMember(Value = "Bkb_3oe")]
+        [JsonPropertyName("Bkb_3oe")]
         TotalPointsThirdQuarterEvenOrOdd, // Punkty 3. kwarty N/P
-        [EnumMember(Value = "Bkb_4oe")]
+        [JsonPropertyName("Bkb_4oe")]
         TotalPointsFourthQuarterEvenOrOdd, // Punkty 4. kwarty N/P
-        [EnumMember(Value = "Bkb_WTO")] 
+        [JsonPropertyName("Bkb_WTO")] 
         WinnerAndTotalPoints, // Zwycięzca i liczba punktów"
-        [EnumMember(Value = "Bkb_TPB")]
+        [JsonPropertyName("Bkb_TPB")]
         TotalPointsRange, // Łączna liczba punktów - zakres
-        [EnumMember(Value = "Bkb_Fhw")]
+        [JsonPropertyName("Bkb_Fhw")]
         FirstHalfWinner, // Zwycięzca połowy
-        [EnumMember(Value = "Bkb_6Wmg")]
+        [JsonPropertyName("Bkb_6Wmg")]
         Winner6, //Różnica zwycięstwa 6-drogowo"
-        [EnumMember(Value = "Bkb_Hth")]
+        [JsonPropertyName("Bkb_Hth")]
         FirstHalfWinnerHandicap, // Wynik połowy handicap"
-        [EnumMember(Value = "Bkb_Htr")]
+        [JsonPropertyName("Bkb_Htr")]
         FirstHalfResult, // Wynik połowy"
-        [EnumMember(Value = "")]
+        [JsonPropertyName("")]
         FirstHalfResul2t, // Wynik połowy"
+    }
 
+    public class BetCodesMap
+    {
+        static BetCodesMap()
+        {
+            var dictionary = new Dictionary<string, BetCodes>();
+
+            foreach (var value in Enum.GetValues(typeof(BetCodes)))
+            {
+                var betCode = (BetCodes)value;
+                var attributeValue = betCode.GetAttributeOfType<JsonPropertyNameAttribute>();
+                dictionary[attributeValue!.Name] = betCode;
+            }
+
+            Map = dictionary.ToImmutableDictionary();
+        }
+
+        public static ImmutableDictionary<string, BetCodes> Map { get; }
     }
 }

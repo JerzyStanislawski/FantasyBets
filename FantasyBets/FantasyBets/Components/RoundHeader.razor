@@ -1,0 +1,67 @@
+﻿@using FantasyBets.Data
+@using FantasyBets.Services
+
+@inject IDbContextFactory<DataContext> DbContextFactory
+@inject Configuration Config
+@inject CurrentRoundProvider CurrentRoundProvider
+
+<h2>
+    @if (roundNumber > 1)
+    {
+        <a href="" @onclick="PreviousRound" @onclick:preventDefault>&#9204;</a>
+    }
+    Round @roundNumber, @String.Format("{0:00}", round.StartTime.Day) - @round.EndTime.ToShortDateString()
+    @if (roundNumber < roundsInSeason.Count())
+    {
+        <a href="" @onclick="NextRound" @onclick:preventDefault>&#9205;</a>
+    }
+</h2>
+
+@code {
+    int roundNumber;
+    Round round = null!;
+    IEnumerable<Round> roundsInSeason = null!;
+
+    [Parameter]
+    public Action<Round> RoundLoadedEvent { get; set; } = null!;
+
+    protected async override Task OnInitializedAsync()
+    {
+        await LoadRound();
+    }
+
+    private async Task LoadRound()
+    {        
+        using var dbContext = await DbContextFactory.CreateDbContextAsync();
+        var roundsInSeasonQueryable = dbContext.Rounds!
+            .Include(x => x.Season)
+            .Where(x => x.Season.Code == Config.CurrentSeasonCode);
+        roundsInSeason = roundsInSeasonQueryable.ToList();
+
+        if (roundNumber == 0)
+        {
+            roundNumber = await CurrentRoundProvider.GetCurrentRoundNumber();
+        }
+
+        round = roundsInSeasonQueryable
+            .Include(x => x.Games).ThenInclude(x => x.HomeTeam)
+            .Include(x => x.Games).ThenInclude(x => x.AwayTeam)
+            .Include(x => x.Games).ThenInclude(x => x.BetSelections).ThenInclude(x => x.BetType)
+            .Include(x => x.Games).ThenInclude(x => x.BetSelections).ThenInclude(x => x.User)
+            .First(x => x.Number == roundNumber);
+
+        RoundLoadedEvent?.Invoke(round);
+    }
+    
+    private async Task NextRound()
+    {
+        roundNumber++;
+        await LoadRound();
+    }
+
+    private async Task PreviousRound()
+    {
+        roundNumber--;
+        await LoadRound();
+    }
+}

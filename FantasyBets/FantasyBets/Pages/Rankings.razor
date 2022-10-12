@@ -1,0 +1,58 @@
+﻿@page "/rankings"
+@using FantasyBets.Components
+@using FantasyBets.Data
+@using static FantasyBets.Components.RankingTable
+
+@inject IDbContextFactory<DataContext> DbContextFactory
+
+<div>
+    <TabControl>
+        <TabPage Text="Round">
+            <div class="round-header" style="margin-top: 50px;">
+                <RoundHeader RoundLoadedEvent=@(async round => await RoundLoaded(round)) />
+            </div>
+            <RankingTable TotalRank=@roundRank />
+        </TabPage>
+        <TabPage Text="Total">
+            <br />
+            <RankingTable TotalRank=@totalRank />
+        </TabPage>
+    </TabControl>
+</div>
+
+@code {
+    IEnumerable<UserPoints> totalRank = new List<UserPoints>();
+    IEnumerable<UserPoints> roundRank = new List<UserPoints>();
+
+    protected async override Task OnInitializedAsync()
+    {
+        using var dbContext = await DbContextFactory.CreateDbContextAsync();
+
+        var usersWithBets = await dbContext.Users
+            .Include(x => x.BetSelections.Where(y => y.Result == BetResult.Success))
+            .Take(100)
+            .ToListAsync();
+
+        totalRank = ToRank(usersWithBets);
+    }
+
+    private async Task RoundLoaded(Round round)
+    {
+        using var dbContext = await DbContextFactory.CreateDbContextAsync();
+        var gameIds = round.Games.Select(x => x.Id);
+
+        var usersWithBets = await dbContext.Users
+            .Include(x => x.BetSelections.Where(y => y.Result == BetResult.Success && gameIds.Contains(y.Game.Id)))
+            .Take(100)
+            .ToListAsync();
+
+        roundRank = ToRank(usersWithBets);
+
+        StateHasChanged();
+    }
+
+    private IEnumerable<UserPoints> ToRank(IEnumerable<FantasyUser> usersWithBets)
+        => usersWithBets.Select(x => new UserPoints(x.UserName, x.BetSelections.Sum(y => y.Odds)))
+                                 .OrderByDescending(x => x.Points)
+                                 .ToList();
+}
