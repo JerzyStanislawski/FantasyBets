@@ -8,14 +8,15 @@
 <div>
     <TabControl>
         <TabPage Text="Round">
-            <div class="round-header" style="margin-top: 50px;">
+            <div class="rankings-round-header center">
                 <RoundHeader RoundLoadedEvent=@(async round => await RoundLoaded(round)) />
             </div>
             <RankingTable TotalRank=@roundRank />
         </TabPage>
         <TabPage Text="Total">
-            <br />
-            <RankingTable TotalRank=@totalRank />
+            <div class="rankings-total">
+                <RankingTable TotalRank=@totalRank />
+            </div>
         </TabPage>
     </TabControl>
 </div>

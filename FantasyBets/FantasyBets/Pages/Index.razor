@@ -14,6 +14,7 @@
 <div class="round-header">
     <RoundHeader RoundLoadedEvent=@RoundLoaded />
     <div class="display-end user-points">
+        <div>Round stake: <span class="bet-odds">@roundStake</span></div>
         <div>Round points: <span class="bet-odds">@roundPoints</span></div>
         <div>Total points: <span class="bet-odds">@totalPoints</span></div>
     </div>
@@ -46,6 +47,7 @@
 
     IEnumerable<IGrouping<DateTime, Game>> groupedGames = null!;
 
+    decimal roundStake;
     decimal roundPoints;
     decimal totalPoints;
 
@@ -69,6 +71,8 @@
 
     private void SetUserPoints(Round round)
     {
+        roundStake = round.Games.SelectMany(x => x.BetSelections.Where(b => b.UserId == StateContainer.CurrentUser?.Id))
+                                 .Sum(x => x.Odds);
         roundPoints = round.Games.SelectMany(x => x.BetSelections.Where(b => b.UserId == StateContainer.CurrentUser?.Id))
                                  .Where(x => x.Result == BetResult.Success)
                                  .Sum(x => x.Odds);

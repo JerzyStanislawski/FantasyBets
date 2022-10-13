@@ -28,6 +28,7 @@ builder.Services.AddLogging(options => options.AddConsole());
 
 builder.Services.AddHostedService<UpdateRoundsHostedService>();
 builder.Services.AddHostedService<UpdateBetsHostedService>();
+builder.Services.AddHostedService<GameStatsHostedService>();
 
 builder.Services.AddHttpClient();
 builder.Services.AddHttpClient(nameof(UpdateBetsHostedService));
