@@ -12,9 +12,9 @@ namespace FantasyBets.Logic.Parsers
             _configuration = configuration;
         }
 
-        public GameStats? Parse(string betsPayload, int roundNumber)
+        public GameStats? Parse(string gamePayload)
         {
-            var jsonGameStats = JsonSerializer.Deserialize<JsonGameStats>(betsPayload, new JsonSerializerOptions
+            var jsonGameStats = JsonSerializer.Deserialize<JsonGameStats>(gamePayload, new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true,
             });
