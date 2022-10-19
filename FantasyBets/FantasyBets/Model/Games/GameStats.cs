@@ -7,6 +7,8 @@
         public ScoreByQuarter ScoreHomeTeamByQuarter { get; init; } = new ScoreByQuarter();
         public ScoreByQuarter ScoreAwayTeamByQuarter { get; init; } = new ScoreByQuarter();
         public Dictionary<string, PlayerStats> PlayerStats { get; init; } = new Dictionary<string, PlayerStats>();
+        public TeamStats HostTeamStats { get; set; } = new();
+        public TeamStats AwayTeamStats { get; set; } = new();
     }
 
     public class ScoreByQuarter
@@ -24,5 +26,25 @@
         public int Assists{ get; init; }
         public int Eval { get; init; }
         public string TeamSymbol { get; init; } = string.Empty;
+    }
+
+    public class TeamStats
+    {
+        public int Points { get; set; }
+        public int FieldGoalsMade2 { get; set; }
+        public int FieldGoalsAttempted2 { get; set; }
+        public int FieldGoalsMade3 { get; set; }
+        public int FieldGoalsAttempted3 { get; set; }
+        public int FreeThrowsMade { get; set; }
+        public int FreeThrowsAttempted { get; set; }
+        public int OffensiveRebounds { get; set; }
+        public int DefensiveRebounds { get; set; }
+        public int TotalRebounds { get; set; }
+        public int Assists { get; set; }
+        public int Steals { get; set; }
+        public int Turnovers { get; set; }
+        public int Blocks { get; set; }
+        public int Eval { get; set; }
+        public int Minutes { get; set; }
     }
 }

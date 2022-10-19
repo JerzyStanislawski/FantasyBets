@@ -26,14 +26,13 @@ namespace FantasyBets.Logic.Parsers
                 throw new ArgumentNullException(nameof(betsPayload));
 
             var gameBets = new GameBets();
-
-            var games = await _dataProvider.GetGamesByRound(roundNumber);
-            var teamNames = bets.Contestants.Select(x => x.Name);
-
-            var game = games.FirstOrDefault(x => teamNames.Contains(_configuration.BettingFeedTeamNames[x.AwayTeam.Symbol]) &&
-                teamNames.Contains(_configuration.BettingFeedTeamNames[x.HomeTeam.Symbol]));
+            var game = await AssignGameToBets(bets, roundNumber);
             if (game is null)
-                throw new Exception("Could not assign bets to a game");
+            {
+                game = await AssignGameToBets(bets, roundNumber + 1);
+                if (game is null)
+                    throw new Exception("Could not assign bets to a game");
+            }
             gameBets.Game = game;
 
             var marketBets = new List<GameBet>();            
@@ -57,6 +56,15 @@ namespace FantasyBets.Logic.Parsers
             gameBets.Bets = marketBets;
 
             return gameBets;
+        }
+
+        private async Task<Game?> AssignGameToBets(JsonBets bets, int roundNumber)
+        {
+            var games = await _dataProvider.GetGamesByRound(roundNumber);
+            var teamNames = bets.Contestants.Select(x => x.Name);
+
+            return games.FirstOrDefault(x => teamNames.Contains(_configuration.BettingFeedTeamNames[x.AwayTeam.Symbol]) &&
+                teamNames.Contains(_configuration.BettingFeedTeamNames[x.HomeTeam.Symbol]));
         }
 
         private class JsonBets

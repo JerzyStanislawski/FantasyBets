@@ -38,6 +38,7 @@ builder.Services.AddSingleton<CurrentRoundProvider>();
 builder.Services.AddSingleton<RoundParser>();
 builder.Services.AddSingleton<RoundBetsParser>();
 builder.Services.AddSingleton<GameBetsParser>();
+builder.Services.AddSingleton<GameStatsParser>();
 builder.Services.AddSingleton(builder.Configuration.Get<Configuration>());
 builder.Services.AddSingleton<BettingService>();
 

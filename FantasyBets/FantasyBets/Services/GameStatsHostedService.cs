@@ -39,7 +39,8 @@ namespace FantasyBets.Services
                     using var dbContext = await _dbContextFactory.CreateDbContextAsync();
                     var currentRound = dbContext.Rounds!
                         .Include(x => x.Games)
-                        .FirstOrDefault(x => x.StartTime < DateTime.UtcNow && x.EndTime.AddHours(4) > DateTime.UtcNow);
+                        .ThenInclude(x => x.BetSelections)
+                        .FirstOrDefault(x => x.StartTime < DateTime.UtcNow && x.EndTime.AddHours(40000) > DateTime.UtcNow);
 
                     if (currentRound is not null)
                     {
@@ -66,7 +67,7 @@ namespace FantasyBets.Services
 
         private async Task TrackGames(Round currentRound)
         {
-            var games = currentRound.Games.Where(x => x.Time < DateTime.UtcNow && x.Time.AddHours(4) > DateTime.UtcNow
+            var games = currentRound.Games.Where(x => x.Time < DateTime.UtcNow && x.Time.AddHours(40000) > DateTime.UtcNow
                 && x.BetSelections.Any(x => x.Result == BetResult.Pending));
 
             var tasks = new List<Task>();
@@ -90,8 +91,10 @@ namespace FantasyBets.Services
                 var response = await httpClient.GetAsync(url);
                 if (!response.IsSuccessStatusCode)
                 {
-                    _logger.LogError(ex, $"Error downloading game stats, url: {url}");
+                    _logger.LogError($"Error downloading game stats, url: {url}, status code: {response.StatusCode}");
                 }
+                var payload = await response.Content.ReadAsStringAsync();
+                var gameStats = _gameStatsParser.Parse(payload);
             }
             catch (Exception ex)
             {

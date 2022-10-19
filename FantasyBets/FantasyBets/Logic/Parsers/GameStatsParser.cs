@@ -1,5 +1,6 @@
 ﻿using FantasyBets.Model.Games;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace FantasyBets.Logic.Parsers
 {
@@ -48,7 +49,32 @@ namespace FantasyBets.Logic.Parsers
                         Assists = x.Assistances,
                         Eval = x.Valuation,
                         TeamSymbol = x.Team
-                    })
+                    }),
+                HostTeamStats = GetTeamStats(jsonGameStats.Stats[0].TeamStats),
+                AwayTeamStats = GetTeamStats(jsonGameStats.Stats[1].TeamStats)
+            };
+        }
+
+        private TeamStats GetTeamStats(JsonTeamStats teamStats)
+        {
+            return new TeamStats
+            {
+                Points = teamStats.Points,
+                FieldGoalsAttempted2 = teamStats.FieldGoalsAttempted2,
+                FieldGoalsMade2 = teamStats.FieldGoalsMade2,
+                FieldGoalsAttempted3 = teamStats.FieldGoalsAttempted3,
+                FieldGoalsMade3 = teamStats.FieldGoalsMade3,
+                FreeThrowsAttempted = teamStats.FreeThrowsAttempted,
+                FreeThrowsMade = teamStats.FreeThrowsMade,
+                DefensiveRebounds = teamStats.DefensiveRebounds,
+                OffensiveRebounds = teamStats.OffensiveRebounds,
+                TotalRebounds = teamStats.TotalRebounds,
+                Assists = teamStats.Assistances,
+                Steals = teamStats.Steals,
+                Turnovers = teamStats.Turnovers,
+                Blocks = teamStats.BlocksFavour,
+                Eval = teamStats.Valuation,
+                Minutes = int.Parse(teamStats.Minutes[..3])
             };
         }
 
@@ -73,6 +99,8 @@ namespace FantasyBets.Logic.Parsers
         {
             public string Team { get; set; } = string.Empty;
             public JsonPlayerStats[] PlayersStats { get; set; } = Array.Empty<JsonPlayerStats>();
+            [JsonPropertyName("totr")]
+            public JsonTeamStats TeamStats { get; set; } = new JsonTeamStats();
         }
 
         class JsonPlayerStats
@@ -83,6 +111,26 @@ namespace FantasyBets.Logic.Parsers
             public int TotalRebounds { get; set; }
             public int Assistances { get; set; }
             public int Valuation { get; set; }
+        }
+
+        class JsonTeamStats
+        {
+            public int Points { get; set; }
+            public int FieldGoalsMade2 { get; set; }
+            public int FieldGoalsAttempted2 { get; set; }
+            public int FieldGoalsMade3 { get; set; }
+            public int FieldGoalsAttempted3 { get; set; }
+            public int FreeThrowsMade { get; set; }
+            public int FreeThrowsAttempted { get; set; }
+            public int OffensiveRebounds { get; set; }
+            public int DefensiveRebounds { get; set; }
+            public int TotalRebounds { get; set; }
+            public int Assistances { get; set; }
+            public int Steals { get; set; }
+            public int Turnovers { get; set; }
+            public int BlocksFavour { get; set; }
+            public int Valuation { get; set; }
+            public string Minutes { get; set; } = String.Empty;
         }
     }
 }
