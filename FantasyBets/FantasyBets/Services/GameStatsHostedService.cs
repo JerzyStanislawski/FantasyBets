@@ -1,4 +1,5 @@
 ﻿using FantasyBets.Data;
+using FantasyBets.Evaluation;
 using FantasyBets.Logic.Parsers;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,6 +11,7 @@ namespace FantasyBets.Services
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly GameStatsParser _gameStatsParser;
         private readonly Configuration _configuration;
+        private readonly BetsEvaluator _betsEvaluator;
         private readonly ILogger _logger;
         private readonly PeriodicTimer _timer;
         private PeriodicTimer? _roundTimer;
@@ -19,12 +21,14 @@ namespace FantasyBets.Services
             IHttpClientFactory httpClientFactory,
             GameStatsParser gameStatsParser,
             Configuration configuration,
+            BetsEvaluator betsEvaluator,
             ILogger<UpdateBetsHostedService> logger)
         {
             _dbContextFactory = dbContextFactory;
             _httpClientFactory = httpClientFactory;
             _gameStatsParser = gameStatsParser;
             _configuration = configuration;
+            _betsEvaluator = betsEvaluator;
             _logger = logger;
             _timer = new PeriodicTimer(TimeSpan.FromHours(1));
         }
@@ -40,6 +44,7 @@ namespace FantasyBets.Services
                     var currentRound = dbContext.Rounds!
                         .Include(x => x.Games)
                         .ThenInclude(x => x.BetSelections)
+                        .ThenInclude(x => x.BetType)
                         .FirstOrDefault(x => x.StartTime < DateTime.UtcNow && x.EndTime.AddHours(40000) > DateTime.UtcNow);
 
                     if (currentRound is not null)
@@ -95,6 +100,11 @@ namespace FantasyBets.Services
                 }
                 var payload = await response.Content.ReadAsStringAsync();
                 var gameStats = _gameStatsParser.Parse(payload);
+
+                if (gameStats != null && !gameStats.IsLive && gameStats.ScoreHomeTeam > 0 && gameStats.ScoreAwayTeam > 0)
+                {
+                    await _betsEvaluator.Evaluate(game.BetSelections, gameStats!);
+                }
             }
             catch (Exception ex)
             {

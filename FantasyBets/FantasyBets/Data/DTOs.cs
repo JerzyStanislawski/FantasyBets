@@ -67,7 +67,7 @@ namespace FantasyBets.Data
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        public BetCodes BetCode { get; set; }
+        public BetCode BetCode { get; set; }
         public string Descripion { get; set; } = null!;
         public ICollection<BetSelection> BetSelections { get; set; } = null!;
     }

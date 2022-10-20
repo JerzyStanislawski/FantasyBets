@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace FantasyBets.Model.Bets
 {
-    public enum BetCodes
+    public enum BetCode
     {
         [JsonPropertyName("Bkb_Mr6")]
         Winner, // Zwycięzca meczu
@@ -64,20 +64,6 @@ namespace FantasyBets.Model.Bets
         TotalPointsFirstQuarterHome, // Pierwsza kwarta - liczba punktów gospodarzy
         [JsonPropertyName("Bkb_1QAw")]
         TotalPointsFirstQuarterAway, // Suma punktów zespołu gości w pierwszej kwarcie
-        [JsonPropertyName("Bkb_Poe")]
-        TotalPointsEvenOrOdd, // Parzysta / nieparzysta suma punktów meczu
-        [JsonPropertyName("Bkb_Hoe")]
-        TotalPointsFirstHalfEvenOrOdd, // Parzysta / nieparzysta suma punktów 1. połowy
-        [JsonPropertyName("Bkb_2ho")]
-        TotalPointsSecondHalfEvenOrOdd, // Punkty w 2. połowie N/P
-        [JsonPropertyName("Bkb_Qoe")]
-        TotalPointsFirstQuarterEvenOrOdd, // Parzysta / nieparzysta suma punktów 1. kwarty
-        [JsonPropertyName("Bkb_2oe")]
-        TotalPointsSecondQuarterEvenOrOdd, // Punkty 2. kwarty N/P
-        [JsonPropertyName("Bkb_3oe")]
-        TotalPointsThirdQuarterEvenOrOdd, // Punkty 3. kwarty N/P
-        [JsonPropertyName("Bkb_4oe")]
-        TotalPointsFourthQuarterEvenOrOdd, // Punkty 4. kwarty N/P
         [JsonPropertyName("Bkb_WTO")] 
         WinnerAndTotalPoints, // Zwycięzca i liczba punktów"
         [JsonPropertyName("Bkb_TPB")]
@@ -90,19 +76,17 @@ namespace FantasyBets.Model.Bets
         FirstHalfWinnerHandicap, // Wynik połowy handicap"
         [JsonPropertyName("Bkb_Htr")]
         FirstHalfResult, // Wynik połowy"
-        [JsonPropertyName("")]
-        FirstHalfResul2t, // Wynik połowy"
     }
 
     public class BetCodesMap
     {
         static BetCodesMap()
         {
-            var dictionary = new Dictionary<string, BetCodes>();
+            var dictionary = new Dictionary<string, BetCode>();
 
-            foreach (var value in Enum.GetValues(typeof(BetCodes)))
+            foreach (var value in Enum.GetValues(typeof(BetCode)))
             {
-                var betCode = (BetCodes)value;
+                var betCode = (BetCode)value;
                 var attributeValue = betCode.GetAttributeOfType<JsonPropertyNameAttribute>();
                 dictionary[attributeValue!.Name] = betCode;
             }
@@ -110,6 +94,6 @@ namespace FantasyBets.Model.Bets
             Map = dictionary.ToImmutableDictionary();
         }
 
-        public static ImmutableDictionary<string, BetCodes> Map { get; }
+        public static ImmutableDictionary<string, BetCode> Map { get; }
     }
 }

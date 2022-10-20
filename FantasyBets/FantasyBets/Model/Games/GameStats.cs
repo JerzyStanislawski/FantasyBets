@@ -2,6 +2,7 @@
 {
     public class GameStats
     {
+        public bool IsLive { get; init; }
         public int ScoreHomeTeam { get; init; }
         public int ScoreAwayTeam { get; init; }
         public ScoreByQuarter ScoreHomeTeamByQuarter { get; init; } = new ScoreByQuarter();

@@ -20,11 +20,12 @@ namespace FantasyBets.Logic.Parsers
                 PropertyNameCaseInsensitive = true,
             });
 
-            if (jsonGameStats == null || jsonGameStats.Live)
+            if (jsonGameStats == null)
                 return null;
 
             return new GameStats()
             {
+                IsLive = jsonGameStats.Live,
                 ScoreHomeTeam = jsonGameStats.EndOfQuarter[0].Quarter4,
                 ScoreAwayTeam = jsonGameStats.EndOfQuarter[1].Quarter4,
                 ScoreHomeTeamByQuarter = new ScoreByQuarter

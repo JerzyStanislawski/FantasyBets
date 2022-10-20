@@ -1,5 +1,6 @@
 using FantasyBets;
 using FantasyBets.Data;
+using FantasyBets.Evaluation;
 using FantasyBets.Logic.Parsers;
 using FantasyBets.Services;
 using Microsoft.EntityFrameworkCore;
@@ -39,6 +40,7 @@ builder.Services.AddSingleton<RoundParser>();
 builder.Services.AddSingleton<RoundBetsParser>();
 builder.Services.AddSingleton<GameBetsParser>();
 builder.Services.AddSingleton<GameStatsParser>();
+builder.Services.AddSingleton<BetsEvaluator>();
 builder.Services.AddSingleton(builder.Configuration.Get<Configuration>());
 builder.Services.AddSingleton<BettingService>();
 
