@@ -9,15 +9,17 @@ namespace FantasyBets.Evaluation
 {
     public class BetsEvaluator
     {
-        private readonly ReadOnlyDictionary<BetCode, IEvaluatable> _evaluators;
+        private readonly ReadOnlyDictionary<BetCode, BaseEvaluator> _evaluators;
         private readonly IDbContextFactory<DataContext> _dbContextFactory;
+        private readonly Configuration _configuration;
 
-        public BetsEvaluator(IDbContextFactory<DataContext> dbContextFactory)
+        public BetsEvaluator(IDbContextFactory<DataContext> dbContextFactory, Configuration configuration)
         {
             _dbContextFactory = dbContextFactory;
+            _configuration = configuration;
 
             var evaluators = ScanEvaluators();
-            _evaluators = new ReadOnlyDictionary<BetCode, IEvaluatable>(evaluators);
+            _evaluators = new ReadOnlyDictionary<BetCode, BaseEvaluator>(evaluators);
         }
 
         public async Task Evaluate(IEnumerable<BetSelection> betSelections, GameStats gameStats)
@@ -36,16 +38,16 @@ namespace FantasyBets.Evaluation
             }
         }
 
-        private static Dictionary<BetCode, IEvaluatable> ScanEvaluators()
+        private Dictionary<BetCode, BaseEvaluator> ScanEvaluators()
         {
-            var result = new Dictionary<BetCode, IEvaluatable>();
+            var result = new Dictionary<BetCode, BaseEvaluator>();
 
             var assembly = Assembly.GetCallingAssembly();
-            var evaluatorTypes = assembly.GetTypes().Where(x => x.BaseType == typeof(IEvaluatable));
+            var evaluatorTypes = assembly.GetTypes().Where(x => x.BaseType == typeof(BaseEvaluator));
 
             foreach (var evaluatorType in evaluatorTypes)
             {
-                var evaluatable = Activator.CreateInstance(evaluatorType) as IEvaluatable;
+                var evaluatable = Activator.CreateInstance(evaluatorType, _configuration) as BaseEvaluator;
                 result[evaluatable!.BetCode] = evaluatable!;
             }
 

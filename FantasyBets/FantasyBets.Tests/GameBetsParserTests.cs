@@ -27,16 +27,7 @@ namespace FantasyBets.Tests
                         HomeTeam = new Team { Name = "Panathinaikos", Symbol = "PAN" },
                     }
                 }.AsEnumerable()));
-            var config = new Configuration
-            {
-                BettingFeedTeamNames = new Dictionary<string, string>
-                {
-                    { "RMB", "Real Madrid" },
-                    { "BAR", "Barcelona" },
-                    { "OLY", "Olympiacos" },
-                    { "PAO", "Panathinaikos" },
-                }
-            };
+            var config = Fakes.Configuration();
 
             var parser = new GameBetsParser(dataProvider, config);
 

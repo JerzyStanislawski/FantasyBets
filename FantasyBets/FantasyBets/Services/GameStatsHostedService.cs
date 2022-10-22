@@ -45,6 +45,10 @@ namespace FantasyBets.Services
                         .Include(x => x.Games)
                         .ThenInclude(x => x.BetSelections)
                         .ThenInclude(x => x.BetType)
+                        .Include(x => x.Games)
+                        .ThenInclude(x => x.AwayTeam)
+                        .Include(x => x.Games)
+                        .ThenInclude(x => x.HomeTeam)
                         .FirstOrDefault(x => x.StartTime < DateTime.UtcNow && x.EndTime.AddHours(40000) > DateTime.UtcNow);
 
                     if (currentRound is not null)

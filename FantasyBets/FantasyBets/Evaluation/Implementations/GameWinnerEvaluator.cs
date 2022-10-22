@@ -4,13 +4,34 @@ using FantasyBets.Model.Games;
 
 namespace FantasyBets.Evaluation.Implementations
 {
-    public class GameWinnerEvaluator : IEvaluatable
+    public class GameWinnerEvaluator : BaseEvaluator
     {
-        public BetCode BetCode => BetCode.Winner;
-
-        public BetResult Evaluate(BetSelection betSelection, GameStats gameStats)
+        public GameWinnerEvaluator(Configuration configuration) : base(configuration)
         {
-            return BetResult.Pending;
+        }
+
+        public override BetCode BetCode => BetCode.Winner;
+
+        protected override BetResult EvaluateInternal(BetSelection betSelection, GameStats gameStats)
+        {
+            if (HomeTeamBet(betSelection.Game, betSelection.Name))
+            {
+                return gameStats.ScoreHomeTeam > gameStats.ScoreAwayTeam
+                    ? BetResult.Success
+                    : gameStats.ScoreHomeTeam < gameStats.ScoreAwayTeam
+                        ? BetResult.Fail
+                        : BetResult.Pending;
+            }
+            else if (AwayTeamBet(betSelection.Game, betSelection.Name))
+            {
+                return gameStats.ScoreHomeTeam < gameStats.ScoreAwayTeam
+                    ? BetResult.Success
+                    : gameStats.ScoreHomeTeam > gameStats.ScoreAwayTeam
+                        ? BetResult.Fail
+                        : BetResult.Pending;
+            }
+            else
+                return BetResult.Cancelled;
         }
     }
 }
