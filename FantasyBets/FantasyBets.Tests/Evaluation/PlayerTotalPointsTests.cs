@@ -1,16 +1,16 @@
 ﻿namespace FantasyBets.Tests.Evaluation
 {
-    public class PlayerPerformanceEvaluatorTests
+    public class PlayerTotalPointsEvaluatorTests
     {
         [Fact]
-        public void PlayerPerformanceEvaluator_ShouldReturnSuccess_WhenBetMoreThanAndPlayerStatsSufficient()
+        public void PlayerTotalPointsEvaluator_ShouldReturnSuccess_WhenBetMoreThanAndPlayerScoredMore()
         {
             //arrange
             var betSelection = new BetSelection
             {
                 BetType = new BetType
                 {
-                    BetCode = BetCode.PlayerPerformance
+                    BetCode = BetCode.PlayerTotalPoints
                 },
                 Game = Fakes.Game(),
                 Name = "J. Vesely - powyżej 16.5",
@@ -22,16 +22,13 @@
                 {
                     {"VESELY, JAN", new PlayerStats
                         {
-                            Points = 10,
-                            Assists = 3,
-                            TotalRebounds = 4,
-                            Eval = 13,
+                            Points = 17,
                             TeamSymbol = "BAR"
                         }
                     }
                 }
             };
-            var evaluator = new PlayerPerformanceEvaluator(Fakes.Configuration());
+            var evaluator = new PlayerTotalPointsEvaluator(Fakes.Configuration());
 
             //act
             var result = evaluator.Evaluate(betSelection, gameStats);
@@ -41,14 +38,14 @@
         }
 
         [Fact]
-        public void PlayerPerformanceEvaluator_ShouldReturnFail_WhenBetMoreThanAndPlayerStatsNotSufficient()
+        public void PlayerTotalPointsEvaluator_ShouldReturnFail_WhenBetMoreThanAndPlayerScoredLess()
         {
             //arrange
             var betSelection = new BetSelection
             {
                 BetType = new BetType
                 {
-                    BetCode = BetCode.PlayerPerformance
+                    BetCode = BetCode.PlayerTotalPoints
                 },
                 Game = Fakes.Game(),
                 Name = "J. Vesely - powyżej 16.5",
@@ -60,16 +57,13 @@
                 {
                     {"VESELY, JAN", new PlayerStats
                         {
-                            Points = 8,
-                            Assists = 3,
-                            TotalRebounds = 4,
-                            Eval = 18,
+                            Points = 16,
                             TeamSymbol = "BAR"
                         }
                     }
                 }
             };
-            var evaluator = new PlayerPerformanceEvaluator(Fakes.Configuration());
+            var evaluator = new PlayerTotalPointsEvaluator(Fakes.Configuration());
 
             //act
             var result = evaluator.Evaluate(betSelection, gameStats);
@@ -79,14 +73,14 @@
         }
 
         [Fact]
-        public void PlayerPerformanceEvaluator_ShouldReturnSuccess_WhenBetLessThanAndPlayerStatsNotSufficient()
+        public void PlayerTotalPointsEvaluator_ShouldReturnSuccess_WhenBetLessThanAndPlayerScoredLess()
         {
             //arrange
             var betSelection = new BetSelection
             {
                 BetType = new BetType
                 {
-                    BetCode = BetCode.PlayerPerformance
+                    BetCode = BetCode.PlayerTotalPoints
                 },
                 Game = Fakes.Game(),
                 Name = "J. Vesely - poniżej 16.5",
@@ -98,16 +92,13 @@
                 {
                     {"VESELY, JAN", new PlayerStats
                         {
-                            Points = 8,
-                            Assists = 3,
-                            TotalRebounds = 4,
-                            Eval = 18,
+                            Points = 16,
                             TeamSymbol = "BAR"
                         }
                     }
                 }
             };
-            var evaluator = new PlayerPerformanceEvaluator(Fakes.Configuration());
+            var evaluator = new PlayerTotalPointsEvaluator(Fakes.Configuration());
 
             //act
             var result = evaluator.Evaluate(betSelection, gameStats);
@@ -117,14 +108,14 @@
         }
 
         [Fact]
-        public void PlayerPerformanceEvaluator_ShouldReturnFail_WhenBetLessThanAndPlayerStatsSufficient()
+        public void PlayerTotalPointsEvaluator_ShouldReturnFail_WhenBetLessThanAndPlayerScoredMore()
         {
             //arrange
             var betSelection = new BetSelection
             {
                 BetType = new BetType
                 {
-                    BetCode = BetCode.PlayerPerformance
+                    BetCode = BetCode.PlayerTotalPoints
                 },
                 Game = Fakes.Game(),
                 Name = "J. Vesely - poniżej 16.5",
@@ -136,16 +127,13 @@
                 {
                     {"VESELY, JAN", new PlayerStats
                         {
-                            Points = 10,
-                            Assists = 3,
-                            TotalRebounds = 4,
-                            Eval = 18,
+                            Points = 17,
                             TeamSymbol = "BAR"
                         }
                     }
                 }
             };
-            var evaluator = new PlayerPerformanceEvaluator(Fakes.Configuration());
+            var evaluator = new PlayerTotalPointsEvaluator(Fakes.Configuration());
 
             //act
             var result = evaluator.Evaluate(betSelection, gameStats);
@@ -155,14 +143,14 @@
         }
 
         [Fact]
-        public void PlayerPerformanceEvaluator_ShouldReturnCancelled_WhenPlayerNotFoundInGameStats()
+        public void PlayerTotalPointsEvaluator_ShouldReturnCancelled_WhenPlayerNotFoundInGameStats()
         {
             //arrange
             var betSelection = new BetSelection
             {
                 BetType = new BetType
                 {
-                    BetCode = BetCode.PlayerPerformance
+                    BetCode = BetCode.PlayerTotalPoints
                 },
                 Game = Fakes.Game(),
                 Name = "J. Vesely - poniżej 16.5",
@@ -175,7 +163,7 @@
                     { "SATORANSKY, T.", new PlayerStats() }
                 }
             };
-            var evaluator = new PlayerPerformanceEvaluator(Fakes.Configuration());
+            var evaluator = new PlayerTotalPointsEvaluator(Fakes.Configuration());
 
             //act
             var result = evaluator.Evaluate(betSelection, gameStats);
@@ -185,14 +173,14 @@
         }
 
         [Fact]
-        public void PlayerPerformanceEvaluator_ShouldReturnProperResult_WhenFullPlayerNameInBetSelectionName()
+        public void PlayerTotalPointsEvaluator_ShouldReturnProperResult_WhenFullPlayerNameInBetSelectionName()
         {
             //arrange
             var betSelection = new BetSelection
             {
                 BetType = new BetType
                 {
-                    BetCode = BetCode.PlayerPerformance
+                    BetCode = BetCode.PlayerTotalPoints
                 },
                 Game = Fakes.Game(),
                 Name = "Jan Vesely - powyżej 16.5",
@@ -204,16 +192,13 @@
                 {
                     {"VESELY, JAN", new PlayerStats
                         {
-                            Points = 10,
-                            Assists = 3,
-                            TotalRebounds = 4,
-                            Eval = 13,
+                            Points = 25,
                             TeamSymbol = "BAR"
                         }
                     }
                 }
             };
-            var evaluator = new PlayerPerformanceEvaluator(Fakes.Configuration());
+            var evaluator = new PlayerTotalPointsEvaluator(Fakes.Configuration());
 
             //act
             var result = evaluator.Evaluate(betSelection, gameStats);
@@ -221,5 +206,6 @@
             //assert
             result.Should().Be(BetResult.Success);
         }
+
     }
 }

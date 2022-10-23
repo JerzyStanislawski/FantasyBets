@@ -34,7 +34,7 @@ namespace FantasyBets.Tests
             var result = await parser.Parse(payload, 1);
 
             result.Game.Should().Be(targetGame);
-            result.Bets.Count().Should().Be(36);
+            result.Bets.Count().Should().Be(29);
             result.Bets.All(x => x.Selections.Any()).Should().BeTrue();
         }
     }

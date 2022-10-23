@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using FantasyBets.Model.Games;
+using System.Globalization;
 
 namespace FantasyBets.Evaluation
 {
@@ -6,15 +7,17 @@ namespace FantasyBets.Evaluation
     {
         public static TeamAndHandicap ParseTeamAndHandicap(string bet)
         {
-            var parts = bet.Split(' ');
-            var handicap = decimal.Parse(parts[1], new NumberFormatInfo 
+            var spaceIndex = bet.LastIndexOf(' ');
+            var team = bet.Substring(0, spaceIndex);
+            var handicapString = bet.Substring(spaceIndex);
+            var handicap = decimal.Parse(handicapString, new NumberFormatInfo 
             { 
                 NumberDecimalSeparator = ".",
                 PositiveSign = "+",
                 NegativeSign = "-"
             });
 
-            return new TeamAndHandicap(parts[0], handicap);
+            return new TeamAndHandicap(team, handicap);
         }
 
         public static Difference ParseDifference(string bet)
@@ -24,6 +27,24 @@ namespace FantasyBets.Evaluation
             var value = decimal.Parse(parts[1], new NumberFormatInfo { NumberDecimalSeparator = "." });
 
             return new Difference(moreThan ? DifferenceType.MoreThan : DifferenceType.LessThan, value);
+        }
+
+        public static PlayerStats? GetPlayerStats(GameStats gameStats, string playerFromBet)
+        {
+            var player = playerFromBet.Trim().Split(' ');
+            var playerNameOrInitial = player[0].Trim('.');
+            var playerSurname = player[1];
+
+            var statsLine = gameStats.PlayerStats.SingleOrDefault(x => IsPlayerFromStats(x.Key, playerSurname, playerNameOrInitial));
+            return statsLine.Value is null ? null : statsLine.Value;
+        }
+
+        private static bool IsPlayerFromStats(string playerFromStats, string playerSurname, string playerNameOrInitial)
+        {
+            var parts = playerFromStats.Split(',');
+
+            return String.Equals(parts[0].Trim(), playerSurname, StringComparison.InvariantCultureIgnoreCase)
+                && parts[1].Trim().StartsWith(playerNameOrInitial.ToUpper());
         }
     }
 
