@@ -14,6 +14,7 @@
 
     public class ScoreByQuarter
     {
+        public string Team { get; init; } = String.Empty;
         public int Quarter1 { get; init; }
         public int Quarter2 { get; init; }
         public int Quarter3 { get; init; }
@@ -27,6 +28,7 @@
         public int Assists{ get; init; }
         public int Eval { get; init; }
         public string TeamSymbol { get; init; } = string.Empty;
+        public string TeamName { get; init; } = string.Empty;
     }
 
     public class TeamStats

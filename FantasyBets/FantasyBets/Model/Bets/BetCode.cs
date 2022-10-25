@@ -43,11 +43,11 @@ namespace FantasyBets.Model.Bets
         [JsonPropertyName("Bkb_25DC")]
         OneOfPlayersScores25OrMore, // Podwójna szansa gracz zdobędzie co najmniej 25pkt
         [JsonPropertyName("Bkb_Stw")]
-        PlayerScres20OrMoreAndHisTeamWins, // Gracz zdobędzie 20 punktów lub więcej i jego zespół wygra
+        PlayerScores20OrMoreAndHisTeamWins, // Gracz zdobędzie 20 punktów lub więcej i jego zespół wygra
         [JsonPropertyName("Bkb_25W")]
-        PlayerScres25OrMoreAndHisTeamWins, // Gracz zdobędzie 25 punktów lub więcej i jego zespół wygra
+        PlayerScores25OrMoreAndHisTeamWins, // Gracz zdobędzie 25 punktów lub więcej i jego zespół wygra
         [JsonPropertyName("Bkb_30W")]
-        PlayerScres30OrMoreAndHisTeamWins, // Gracz zdobędzie 30 punktów lub więcej i jego zespół wygra
+        PlayerScores30OrMoreAndHisTeamWins, // Gracz zdobędzie 30 punktów lub więcej i jego zespół wygra
         [JsonPropertyName("Bkb_Mot")]
         Overtime, // Dogrywka (Tak/Nie)
         [JsonPropertyName("Bkb_Htf")]

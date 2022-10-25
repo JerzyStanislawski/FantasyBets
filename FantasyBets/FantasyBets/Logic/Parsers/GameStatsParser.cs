@@ -30,6 +30,7 @@ namespace FantasyBets.Logic.Parsers
                 ScoreAwayTeam = jsonGameStats.EndOfQuarter[1].Quarter4,
                 ScoreHomeTeamByQuarter = new ScoreByQuarter
                 {
+                    Team = jsonGameStats.ByQuarter[0].Team,
                     Quarter1 = jsonGameStats.ByQuarter[0].Quarter1,
                     Quarter2 = jsonGameStats.ByQuarter[0].Quarter2,
                     Quarter3 = jsonGameStats.ByQuarter[0].Quarter3,
@@ -37,23 +38,32 @@ namespace FantasyBets.Logic.Parsers
                 },
                 ScoreAwayTeamByQuarter = new ScoreByQuarter
                 {
+                    Team = jsonGameStats.ByQuarter[1].Team,
                     Quarter1 = jsonGameStats.ByQuarter[1].Quarter1,
                     Quarter2 = jsonGameStats.ByQuarter[1].Quarter2,
                     Quarter3 = jsonGameStats.ByQuarter[1].Quarter3,
                     Quarter4 = jsonGameStats.ByQuarter[1].Quarter4,
                 },
-                PlayerStats = jsonGameStats.Stats.SelectMany(x => x.PlayersStats)
+                PlayerStats = GetPlayerStats(jsonGameStats.Stats[0])
+                 .Concat(GetPlayerStats(jsonGameStats.Stats[1]))
+                 .ToDictionary(x => x.Key, x => x.Value),
+                HostTeamStats = GetTeamStats(jsonGameStats.Stats[0].TeamStats),
+                AwayTeamStats = GetTeamStats(jsonGameStats.Stats[1].TeamStats)
+            };
+        }
+
+        private Dictionary<string, PlayerStats> GetPlayerStats(JsonStats jsonStats)
+        {
+            return jsonStats.PlayersStats
                     .ToDictionary(x => x.Player, x => new PlayerStats
                     {
                         Points = x.Points,
                         TotalRebounds = x.TotalRebounds,
                         Assists = x.Assistances,
                         Eval = x.Valuation,
-                        TeamSymbol = x.Team
-                    }),
-                HostTeamStats = GetTeamStats(jsonGameStats.Stats[0].TeamStats),
-                AwayTeamStats = GetTeamStats(jsonGameStats.Stats[1].TeamStats)
-            };
+                        TeamSymbol = x.Team,
+                        TeamName = jsonStats.Team
+                    });
         }
 
         private TeamStats GetTeamStats(JsonTeamStats teamStats)
