@@ -28,6 +28,8 @@ namespace FantasyBets.Model.Bets
         PlayerScores25OrMore, // Zawodnik zdobędzie 25 lub więcej punktów
         [JsonPropertyName("Bkb_30p")]
         PlayerScores30OrMore, // Zawodnik zdobędzie 30 lub więcej punktów
+        [JsonPropertyName("Bkb_35p")]
+        PlayerScores35OrMore, // Zawodnik zdobędzie 30 lub więcej punktów TODO
         [JsonPropertyName("Bkb_Tsc")]
         BestScorer, // Najlepszy strzelec
         [JsonPropertyName("Bkb_Pta2")]
@@ -38,10 +40,20 @@ namespace FantasyBets.Model.Bets
         PlayerTotalPointsAndAssists, // Punkty i Asysty Gracza
         [JsonPropertyName("Bkb_PnR")]
         PlayerTotalPointsAndRebounds, // Punkty i zbiórki gracza
+        [JsonPropertyName("Bkb_AeR")]
+        PlayerTotalReboundsAndAssists, // Zbiórki i Asysty Gracza TODO
+        [JsonPropertyName("BKB_3pt")]
+        Total3PointersMade, // Celne Rzuty za 3 TODO
+        [JsonPropertyName("BKB_h3pt")]
+        Total3PointersMadeByHomeTeam, // Gospodarze - Celne rzuty za 3 punkty TODO
+        [JsonPropertyName("BKB_a3pt")]
+        Total3PointersMadeByAwayTeam, // Goście - Celne rzuty za 3 punkty TODO
         [JsonPropertyName("Bkb_20DC")]
         OneOfPlayersScores20OrMore, // Podwójna szansa gracz zdobędzie co najmniej 20pkt
         [JsonPropertyName("Bkb_25DC")]
         OneOfPlayersScores25OrMore, // Podwójna szansa gracz zdobędzie co najmniej 25pkt
+        [JsonPropertyName("Bkb_20b")]
+        BothPlayersScore20OrMore, // Obydwaj gracze zdobędą co najmniej 20 pkt
         [JsonPropertyName("Bkb_Stw")]
         PlayerScores20OrMoreAndHisTeamWins, // Gracz zdobędzie 20 punktów lub więcej i jego zespół wygra
         [JsonPropertyName("Bkb_25W")]
@@ -52,8 +64,6 @@ namespace FantasyBets.Model.Bets
         Overtime, // Dogrywka (Tak/Nie)
         [JsonPropertyName("Bkb_Htf")]
         WinnerHalfAndTotal, // Połowa / Cały
-        [JsonPropertyName("Bkb_3Wmg")]
-        ThreeWayDifference, // Różnica zwycięstwa 3-drogowo
         [JsonPropertyName("Bkb_Htt")]
         TotalPointsFirstHalf, // Suma punktów 1. połowy
         [JsonPropertyName("Bkb_1HHo")]
@@ -70,12 +80,18 @@ namespace FantasyBets.Model.Bets
         TotalPointsRange, // Łączna liczba punktów - zakres
         [JsonPropertyName("Bkb_Fhw")]
         FirstHalfWinner, // Zwycięzca połowy
-        [JsonPropertyName("Bkb_6Wmg")]
-        Winner6, //Różnica zwycięstwa 6-drogowo"
         [JsonPropertyName("Bkb_Hth")]
         FirstHalfWinnerHandicap, // Wynik połowy handicap"
         [JsonPropertyName("Bkb_Htr")]
         FirstHalfResult, // Wynik połowy"
+        [JsonPropertyName("Bkb_1QW")]
+        Winner1Quarter, // Zwycięzca 1 kwarty
+        [JsonPropertyName("Bkb_2QW")]
+        Winner2Quarter, // Zwycięzca 1 kwarty
+        [JsonPropertyName("Bkb_3QW")]
+        Winner3Quarter, // Zwycięzca 1 kwarty
+        [JsonPropertyName("Bkb_4QW")]
+        Winner4Quarter, // Zwycięzca 1 kwarty
     }
 
     public class BetCodesMap
