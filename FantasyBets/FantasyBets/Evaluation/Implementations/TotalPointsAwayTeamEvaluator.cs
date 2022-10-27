@@ -3,7 +3,7 @@ using FantasyBets.Model.Games;
 
 namespace FantasyBets.Evaluation.Implementations
 {
-    public class TotalPointsAwayTeamEvaluator : TotalPointsBaseEvaluator
+    public class TotalPointsAwayTeamEvaluator : TotalStatsItemBaseEvaluator
     {
         public TotalPointsAwayTeamEvaluator(Configuration configuration) : base(configuration)
         {
@@ -11,7 +11,7 @@ namespace FantasyBets.Evaluation.Implementations
 
         public override BetCode BetCode => BetCode.TotalPointsAway;
 
-        protected override int CalculateTotalPoints(GameStats gameStats)
+        protected override int GetStatsItem(GameStats gameStats)
             => gameStats.ScoreAwayTeam;
     }
 }

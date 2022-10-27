@@ -8,7 +8,7 @@
         public ScoreByQuarter ScoreHomeTeamByQuarter { get; init; } = new ScoreByQuarter();
         public ScoreByQuarter ScoreAwayTeamByQuarter { get; init; } = new ScoreByQuarter();
         public Dictionary<string, PlayerStats> PlayerStats { get; init; } = new Dictionary<string, PlayerStats>();
-        public TeamStats HostTeamStats { get; set; } = new();
+        public TeamStats HomeTeamStats { get; set; } = new();
         public TeamStats AwayTeamStats { get; set; } = new();
     }
 

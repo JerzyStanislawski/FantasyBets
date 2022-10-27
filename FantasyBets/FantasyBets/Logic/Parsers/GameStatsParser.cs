@@ -47,7 +47,7 @@ namespace FantasyBets.Logic.Parsers
                 PlayerStats = GetPlayerStats(jsonGameStats.Stats[0])
                  .Concat(GetPlayerStats(jsonGameStats.Stats[1]))
                  .ToDictionary(x => x.Key, x => x.Value),
-                HostTeamStats = GetTeamStats(jsonGameStats.Stats[0].TeamStats),
+                HomeTeamStats = GetTeamStats(jsonGameStats.Stats[0].TeamStats),
                 AwayTeamStats = GetTeamStats(jsonGameStats.Stats[1].TeamStats)
             };
         }

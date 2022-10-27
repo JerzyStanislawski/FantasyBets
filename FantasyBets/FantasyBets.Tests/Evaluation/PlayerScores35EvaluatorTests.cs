@@ -1,25 +1,28 @@
-﻿namespace FantasyBets.Tests.Evaluation
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace FantasyBets.Tests.Evaluation
 {
-    public class OneOfPlayersScores25OrMoreEvaluatorTests
+    public class PlayerScores35EvaluatorTests
     {
         [Theory]
-        [InlineData(25, 15, BetResult.Success)]
-        [InlineData(30, 15, BetResult.Success)]
-        [InlineData(24, 24, BetResult.Fail)]
-        [InlineData(15, 25, BetResult.Success)]
-        [InlineData(15, 30, BetResult.Success)]
-        [InlineData(25, 25, BetResult.Success)]
-        public void OneOfPlayersScores20OrMore_ShouldReturnSuccess_WhenBet25OrMore(int points1, int points2, BetResult betResult)
+        [InlineData(35, BetResult.Success)]
+        [InlineData(36, BetResult.Success)]
+        [InlineData(30, BetResult.Fail)]
+        public void PlayerScores35Evaluator_ShouldReturnSuccess_WhenBet35OrMore(int points, BetResult betResult)
         {
             //arrange
             var betSelection = new BetSelection
             {
                 BetType = new BetType
                 {
-                    BetCode = BetCode.OneOfPlayersScores25OrMore
+                    BetCode = BetCode.PlayerScores35OrMore
                 },
                 Game = Fakes.Game(),
-                Name = "J. Vesely / T. Satoransky",
+                Name = "J. Vesely",
                 Result = BetResult.Pending
             };
             var gameStats = new GameStats
@@ -28,19 +31,13 @@
                 {
                     {"VESELY, JAN", new PlayerStats
                         {
-                            Points = points1,
-                            TeamSymbol = "BAR"
-                        }
-                    },
-                    {"SATORANSKY, TOMAS", new PlayerStats
-                        {
-                            Points = points2,
+                            Points = points,
                             TeamSymbol = "BAR"
                         }
                     }
                 }
             };
-            var evaluator = new OneOfPlayersScores25OrMoreEvaluator(Fakes.Configuration());
+            var evaluator = new PlayerScores35Evaluator(Fakes.Configuration());
 
             //act
             var result = evaluator.Evaluate(betSelection, gameStats);
@@ -50,32 +47,32 @@
         }
 
         [Fact]
-        public void OneOfPlayersScores25OrMore_ShouldReturnCancelled_WhenPlayerStatsNotFound()
+        public void PlayerScores35Evaluator_ShouldReturnCancelled_WhenPlayerStatsNotFound()
         {
             //arrange
             var betSelection = new BetSelection
             {
                 BetType = new BetType
                 {
-                    BetCode = BetCode.OneOfPlayersScores25OrMore
+                    BetCode = BetCode.PlayerScores35OrMore
                 },
                 Game = Fakes.Game(),
-                Name = "J. Vesely / T. Satoransky",
+                Name = "T. Satoransky",
                 Result = BetResult.Pending
             };
             var gameStats = new GameStats
             {
                 PlayerStats = new Dictionary<string, PlayerStats>
                 {
-                    {"MIROTIC, NIKOLA", new PlayerStats
+                    {"VESELY, JAN", new PlayerStats
                         {
-                            Points = 20,
+                            Points = 35,
                             TeamSymbol = "BAR"
                         }
                     }
                 }
             };
-            var evaluator = new OneOfPlayersScores25OrMoreEvaluator(Fakes.Configuration());
+            var evaluator = new PlayerScores35Evaluator(Fakes.Configuration());
 
             //act
             var result = evaluator.Evaluate(betSelection, gameStats);
@@ -85,17 +82,17 @@
         }
 
         [Fact]
-        public void OneOfPlayersScores25OrMore_ShouldReturnProperResult_WhenFullPlayerNameInBetSelectionName()
+        public void PlayerScores35OrMoreEvaluator_ShouldReturnProperResult_WhenFullPlayerNameInBetSelectionName()
         {
             //arrange
             var betSelection = new BetSelection
             {
                 BetType = new BetType
                 {
-                    BetCode = BetCode.OneOfPlayersScores25OrMore
+                    BetCode = BetCode.PlayerScores35OrMore
                 },
                 Game = Fakes.Game(),
-                Name = "Jan Vesely / Tomas Satoransky",
+                Name = "Jan Vesely",
                 Result = BetResult.Pending
             };
             var gameStats = new GameStats
@@ -104,19 +101,13 @@
                 {
                     {"VESELY, JAN", new PlayerStats
                         {
-                            Points = 25,
-                            TeamSymbol = "BAR"
-                        }
-                    },
-                    {"SATORANSKY, TOMAS", new PlayerStats
-                        {
-                            Points = 25,
+                            Points = 35,
                             TeamSymbol = "BAR"
                         }
                     }
                 }
             };
-            var evaluator = new OneOfPlayersScores25OrMoreEvaluator(Fakes.Configuration());
+            var evaluator = new PlayerScores35Evaluator(Fakes.Configuration());
 
             //act
             var result = evaluator.Evaluate(betSelection, gameStats);

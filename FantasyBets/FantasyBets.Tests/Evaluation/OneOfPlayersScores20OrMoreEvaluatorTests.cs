@@ -40,7 +40,7 @@
                     }
                 }
             };
-            var evaluator = new OneOfPlayersScores20OrMore(Fakes.Configuration());
+            var evaluator = new OneOfPlayersScores20OrMoreEvaluator(Fakes.Configuration());
 
             //act
             var result = evaluator.Evaluate(betSelection, gameStats);
@@ -75,7 +75,7 @@
                     }
                 }
             };
-            var evaluator = new OneOfPlayersScores20OrMore(Fakes.Configuration());
+            var evaluator = new OneOfPlayersScores20OrMoreEvaluator(Fakes.Configuration());
 
             //act
             var result = evaluator.Evaluate(betSelection, gameStats);
@@ -116,7 +116,7 @@
                     }
                 }
             };
-            var evaluator = new OneOfPlayersScores20OrMore(Fakes.Configuration());
+            var evaluator = new OneOfPlayersScores20OrMoreEvaluator(Fakes.Configuration());
 
             //act
             var result = evaluator.Evaluate(betSelection, gameStats);

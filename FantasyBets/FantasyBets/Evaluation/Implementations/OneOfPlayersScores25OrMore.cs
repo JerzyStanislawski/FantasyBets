@@ -2,9 +2,9 @@
 
 namespace FantasyBets.Evaluation.Implementations
 {
-    public class OneOfPlayersScores25OrMore : OneOfPlayersScoresBase
+    public class OneOfPlayersScores25OrMoreEvaluator : OneOfPlayersScoresBaseEvaluator
     {
-        public OneOfPlayersScores25OrMore(Configuration configuration) : base(configuration)
+        public OneOfPlayersScores25OrMoreEvaluator(Configuration configuration) : base(configuration)
         {
         }
 

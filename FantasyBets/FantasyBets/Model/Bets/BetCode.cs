@@ -29,7 +29,7 @@ namespace FantasyBets.Model.Bets
         [JsonPropertyName("Bkb_30p")]
         PlayerScores30OrMore, // Zawodnik zdobędzie 30 lub więcej punktów
         [JsonPropertyName("Bkb_35p")]
-        PlayerScores35OrMore, // Zawodnik zdobędzie 30 lub więcej punktów TODO
+        PlayerScores35OrMore, // Zawodnik zdobędzie 35 lub więcej punktów
         [JsonPropertyName("Bkb_Tsc")]
         BestScorer, // Najlepszy strzelec
         [JsonPropertyName("Bkb_Pta2")]
@@ -41,13 +41,13 @@ namespace FantasyBets.Model.Bets
         [JsonPropertyName("Bkb_PnR")]
         PlayerTotalPointsAndRebounds, // Punkty i zbiórki gracza
         [JsonPropertyName("Bkb_AeR")]
-        PlayerTotalReboundsAndAssists, // Zbiórki i Asysty Gracza TODO
+        PlayerTotalReboundsAndAssists, // Zbiórki i Asysty Gracza
         [JsonPropertyName("BKB_3pt")]
-        Total3PointersMade, // Celne Rzuty za 3 TODO
+        Total3PointersMade, // Celne Rzuty za 3
         [JsonPropertyName("BKB_h3pt")]
-        Total3PointersMadeByHomeTeam, // Gospodarze - Celne rzuty za 3 punkty TODO
+        Total3PointersMadeByHomeTeam, // Gospodarze - Celne rzuty za 3 punkty
         [JsonPropertyName("BKB_a3pt")]
-        Total3PointersMadeByAwayTeam, // Goście - Celne rzuty za 3 punkty TODO
+        Total3PointersMadeByAwayTeam, // Goście - Celne rzuty za 3 punkty
         [JsonPropertyName("Bkb_20DC")]
         OneOfPlayersScores20OrMore, // Podwójna szansa gracz zdobędzie co najmniej 20pkt
         [JsonPropertyName("Bkb_25DC")]
@@ -70,10 +70,6 @@ namespace FantasyBets.Model.Bets
         TotalPointsFirstHalfHome, // Połowa - liczba punktów gospodarzy
         [JsonPropertyName("Bkb_1HAw")]
         TotalPointsFirstHalfAway, // Połowa - liczba punktów gości
-        [JsonPropertyName("Bkb_1QHo")]
-        TotalPointsFirstQuarterHome, // Pierwsza kwarta - liczba punktów gospodarzy
-        [JsonPropertyName("Bkb_1QAw")]
-        TotalPointsFirstQuarterAway, // Suma punktów zespołu gości w pierwszej kwarcie
         [JsonPropertyName("Bkb_WTO")] 
         WinnerAndTotalPoints, // Zwycięzca i liczba punktów"
         [JsonPropertyName("Bkb_TPB")]

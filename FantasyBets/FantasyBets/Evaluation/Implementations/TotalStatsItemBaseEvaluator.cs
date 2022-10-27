@@ -3,9 +3,9 @@ using FantasyBets.Model.Games;
 
 namespace FantasyBets.Evaluation.Implementations
 {
-    public abstract class TotalPointsBaseEvaluator : BaseEvaluator
+    public abstract class TotalStatsItemBaseEvaluator : BaseEvaluator
     {
-        public TotalPointsBaseEvaluator(Configuration configuration) : base(configuration)
+        public TotalStatsItemBaseEvaluator(Configuration configuration) : base(configuration)
         {
         }
 
@@ -13,13 +13,13 @@ namespace FantasyBets.Evaluation.Implementations
         {
             var difference = EvaluationHelpers.ParseDifference(betSelection.Name);
 
-            var statsValue = CalculateTotalPoints(gameStats);
+            var statsValue = GetStatsItem(gameStats);
 
             return difference.Type == DifferenceType.MoreThan
                 ? (statsValue > difference.Value ? BetResult.Success : BetResult.Fail)
                 : (statsValue < difference.Value ? BetResult.Success : BetResult.Fail);
         }
 
-        protected abstract int CalculateTotalPoints(GameStats gameStats);
+        protected abstract int GetStatsItem(GameStats gameStats);
     }
 }
