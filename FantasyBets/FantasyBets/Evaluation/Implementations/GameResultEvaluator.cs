@@ -20,6 +20,8 @@ namespace FantasyBets.Evaluation.Implementations
                     ? BetResult.Success
                     : BetResult.Fail;
             }
+            else if (EvaluationHelpers.ScoreEqualInRegulationTime(gameStats))
+                return BetResult.Fail;
 
             return base.EvaluateInternal(betSelection, gameStats);
         }
