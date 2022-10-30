@@ -43,7 +43,8 @@ namespace FantasyBets.Evaluation
             var result = new Dictionary<BetCode, BaseEvaluator>();
 
             var assembly = Assembly.GetCallingAssembly();
-            var evaluatorTypes = assembly.GetTypes().Where(x => x.BaseType == typeof(BaseEvaluator));
+            var evaluatorTypes = assembly.GetTypes()
+                .Where(IsEvaluatorType);
 
             foreach (var evaluatorType in evaluatorTypes)
             {
@@ -52,6 +53,22 @@ namespace FantasyBets.Evaluation
             }
 
             return result;
+        }
+
+        private bool IsEvaluatorType(Type type)
+        {
+            if (type.IsAbstract)
+                return false;
+
+            var baseType = type.BaseType;
+            while (baseType != null)
+            {
+                if (baseType == typeof(BaseEvaluator))
+                    return true;
+                baseType = baseType.BaseType;
+            }
+
+            return false;
         }
     }
 }

@@ -1,0 +1,23 @@
+﻿@page "/UserBets/{userId:int}"
+
+@inject IBetsProvider BetsProvider;
+@inject NavigationManager NavigationManager;
+@inject IDbContextFactory<DataContext> DbContextFactory
+
+<PageTitle>Bets - @userName</PageTitle>
+
+@code {
+
+    [Parameter]
+    public int UserId { get; set; }
+
+    private string userName;
+
+    
+    protected override async Task OnInitializedAsync()
+    {
+
+
+        await base.OnInitializedAsync();
+    }
+}
