@@ -53,7 +53,7 @@
     }
 
     private IEnumerable<UserPoints> ToRank(IEnumerable<FantasyUser> usersWithBets)
-        => usersWithBets.Select(x => new UserPoints(x.UserName, x.BetSelections.Sum(y => y.Odds)))
+        => usersWithBets.Select(x => new UserPoints(x.UserName, x.Id, x.BetSelections.Sum(y => y.Odds)))
                                  .OrderByDescending(x => x.Points)
                                  .ToList();
 }

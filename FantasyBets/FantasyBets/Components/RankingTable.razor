@@ -7,9 +7,11 @@
         @foreach (var user in TotalRank)
         {
             <li class="center user-points">
-                <p class="col-md-1 inline text-right">@(iterator++).</p>
-                <p class="col-md-6 inline">@user.Name</p>
-                <p class="col-md-2 inline text-right">@user.Points</p>
+                <a href="/UserBets/@user.Id" class="inline">
+                    <p class="col-md-1 inline text-right">@(iterator++).</p>
+                    <p class="col-md-6 inline">@user.Name</p>
+                    <p class="col-md-2 inline text-right">@user.Points</p>
+                </a>
             </li>
         }
     </ul>
@@ -19,5 +21,5 @@
     [Parameter]
     public IEnumerable<UserPoints> TotalRank { get; set; } = new List<UserPoints>();
 
-    public record UserPoints(string Name, decimal Points);
+    public record UserPoints(string Name, string Id, decimal Points);
 }

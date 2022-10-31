@@ -1,25 +1,31 @@
-﻿@page "/UserBets/{userId:int}"
+﻿@page "/UserBets/{userId}"
 @using FantasyBets.Data
 @using FantasyBets.Services
 
 @inject IBetsProvider BetsProvider;
 @inject NavigationManager NavigationManager;
 @inject IDbContextFactory<DataContext> DbContextFactory
+@inject UserManager<FantasyUser> UserManager;
 
 <PageTitle>Bets - @userName</PageTitle>
+
+<GamesWithBets UserId="@UserId"
+               IsCurrentUser="@false" 
+               BetSelections="@betSelections" />
 
 @code {
 
     [Parameter]
-    public int UserId { get; set; }
+    public string UserId { get; set; }
 
+    private IEnumerable<BetSelection>? betSelections;
     private string userName;
 
-    
-    protected override async Task OnInitializedAsync()
+    protected async override Task OnInitializedAsync()
     {
+        var user = await UserManager.FindByIdAsync(UserId);
 
-
-        await base.OnInitializedAsync();
+        betSelections = user.BetSelections;
+        userName = user.Email;
     }
 }
