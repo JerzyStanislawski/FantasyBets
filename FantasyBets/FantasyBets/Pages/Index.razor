@@ -3,90 +3,11 @@
 @using FantasyBets.Data
 @using FantasyBets.Services
 @using Microsoft.AspNetCore.WebUtilities
-@inject IDbContextFactory<DataContext> DbContextFactory
-@inject NavigationManager NavigationManager
 @inject Configuration Config
-@inject CurrentRoundProvider CurrentRoundProvider
 @inject StateContainer StateContainer
 
 <PageTitle>My Bets</PageTitle>
 
-<div class="round-header">
-    <RoundHeader RoundLoadedEvent=@RoundLoaded />
-    <div class="display-end user-points">
-        <div>Round stake: <span class="bet-odds">@roundStake</span></div>
-        <div>Round points: <span class="bet-odds">@roundPoints</span></div>
-        <div>Total points: <span class="bet-odds">@totalPoints</span></div>
-    </div>
-</div>
-
-@if (groupedGames is not null)
-{
-    @foreach (var day in groupedGames)
-    {
-        <h4 class="col-md-1">@day.Key.DayOfWeek.ToString()</h4>
-        <ul class="col-md-1">
-            @foreach (var game in day)
-            {
-                <li>
-                    <div class="inline">
-                        <a href="@GenerateGameLink(game)">
-                            <SingleGame Game="@game" />
-                        </a>
-                        <SingleBet BetSelection="@game.BetSelections.FirstOrDefault(x => x.User.Id == StateContainer.CurrentUser?.Id)" />
-                    </div>
-                </li>
-            }
-        </ul>
-    }
-}
-
-@code {
-    [CascadingParameter] 
-    protected Task<AuthenticationState> AuthStat { get; set; } = null!;
-
-    IEnumerable<IGrouping<DateTime, Game>> groupedGames = null!;
-
-    decimal roundStake;
-    decimal roundPoints;
-    decimal totalPoints;
-
-    protected override async Task OnInitializedAsync()
-    {
-        GlobalLock.Wait();
-
-        await base.OnInitializedAsync();
-    }
-
-    private void RoundLoaded(Round round)
-    {        
-        groupedGames = round.Games
-            .OrderBy(x => x.Time)
-            .GroupBy(x => x.Time.Date);
-
-        SetUserPoints(round);
-
-        StateHasChanged();
-    }
-
-    private void SetUserPoints(Round round)
-    {
-        roundStake = round.Games.SelectMany(x => x.BetSelections.Where(b => b.UserId == StateContainer.CurrentUser?.Id))
-                                 .Sum(x => x.Odds);
-        roundPoints = round.Games.SelectMany(x => x.BetSelections.Where(b => b.UserId == StateContainer.CurrentUser?.Id))
-                                 .Where(x => x.Result == BetResult.Success)
-                                 .Sum(x => x.Odds);
-        var total = StateContainer.CurrentUser?.BetSelections
-                                    .Where(x => x.Game.Round.Season.Code == Config.CurrentSeasonCode && x.Result == BetResult.Success)
-                                    .Sum(x => x.Odds);
-        totalPoints = total.HasValue ? total.Value : 0m;
-    }
-
-    private string GenerateGameLink(Game game)
-    {
-        if (game.Time > DateTime.UtcNow)
-            return $"/bets/{game.Code}";
-        else
-            return $"https://www.euroleaguebasketball.net/euroleague/game-center/2022-23/{game.HomeTeam.Name.Replace(' ', '-')}-{game.AwayTeam.Name.Replace(' ', '-')}/{Config.CurrentSeasonCode}/{game.Code}/#boxscore";
-    }
-}
+<GamesWithBets UserId="@StateContainer.CurrentUser?.Id"
+               IsCurrentUser="@true" 
+               BetSelections="@StateContainer.CurrentUser?.BetSelections" />

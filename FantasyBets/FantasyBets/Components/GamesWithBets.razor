@@ -1,0 +1,91 @@
+﻿@using FantasyBets.Components
+@using FantasyBets.Data
+@using FantasyBets.Services
+@using Microsoft.AspNetCore.WebUtilities
+@inject Configuration Config
+@inject CurrentRoundProvider CurrentRoundProvider
+@inject StateContainer StateContainer
+
+<div class="round-header">
+    <RoundHeader RoundLoadedEvent=@RoundLoaded />
+    <div class="display-end user-points">
+        <div>Round stake: <span class="bet-odds">@roundStake</span></div>
+        <div>Round points: <span class="bet-odds">@roundPoints</span></div>
+        <div>Total points: <span class="bet-odds">@totalPoints</span></div>
+    </div>
+</div>
+
+@if (groupedGames is not null)
+{
+    @foreach (var day in groupedGames)
+    {
+        <h4 class="col-md-1">@day.Key.DayOfWeek.ToString()</h4>
+        <ul class="col-md-1">
+            @foreach (var game in day)
+            {
+                <li>
+                    <div class="inline">
+                        <a href="@GenerateGameLink(game)">
+                            <SingleGame Game="@game" />
+                        </a>
+                        <SingleBet BetSelection="@game.BetSelections.FirstOrDefault(x => x.User.Id == UserId)" />
+                    </div>
+                </li>
+            }
+        </ul>
+    }
+}
+
+@code {
+
+    [Parameter]
+    public string UserId { get; set; } = null!;
+    [Parameter]
+    public bool IsCurrentUser { get; set; }
+    [Parameter]
+    public IEnumerable<BetSelection>? BetSelections { get; set; }
+
+    IEnumerable<IGrouping<DateTime, Game>> groupedGames = null!;
+
+    decimal roundStake;
+    decimal roundPoints;
+    decimal totalPoints;
+
+    protected override async Task OnInitializedAsync()
+    {
+        GlobalLock.Wait();
+
+        await base.OnInitializedAsync();
+    }
+
+    private void RoundLoaded(Round round)
+    {
+        groupedGames = round.Games
+            .OrderBy(x => x.Time)
+            .GroupBy(x => x.Time.Date);
+
+        SetUserPoints(round);
+
+        StateHasChanged();
+    }
+
+    private void SetUserPoints(Round round)
+    {
+        roundStake = round.Games.SelectMany(x => x.BetSelections.Where(b => b.UserId == UserId))
+                                 .Sum(x => x.Odds);
+        roundPoints = round.Games.SelectMany(x => x.BetSelections.Where(b => b.UserId == UserId))
+                                 .Where(x => x.Result == BetResult.Success)
+                                 .Sum(x => x.Odds);
+        var total = BetSelections?.Where(x => x.Game.Round.Season.Code == Config.CurrentSeasonCode && x.Result == BetResult.Success)
+                                 .Sum(x => x.Odds);
+        totalPoints = total.HasValue ? total.Value : 0m;
+    }
+
+    private string GenerateGameLink(Game game)
+    {
+        if (IsCurrentUser && game.Time > DateTime.UtcNow)
+            return $"/bets/{game.Code}";
+        else
+            return $"{Config.Feeds.GameStatsGuiPrefix}/{Config.CurrentSeasonSymbol}/{game.HomeTeam.Name.Replace(' ', '-')}-{game.AwayTeam.Name.Replace(' ', '-')}/{Config.CurrentSeasonCode}/{game.Code}/#boxscore";
+    }
+}
