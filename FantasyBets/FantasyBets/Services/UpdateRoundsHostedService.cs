@@ -32,6 +32,7 @@ namespace FantasyBets.Services
                 GlobalLock.Lock();
 
                 using var db = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
+                await db.Database.EnsureCreatedAsync();
                 if (!db.Rounds!.Any())
                 {
                     var i = 1;
