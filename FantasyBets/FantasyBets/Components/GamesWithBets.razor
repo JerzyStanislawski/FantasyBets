@@ -2,6 +2,7 @@
 @using FantasyBets.Data
 @using FantasyBets.Services
 @using Microsoft.AspNetCore.WebUtilities
+
 @inject Configuration Config
 @inject CurrentRoundProvider CurrentRoundProvider
 @inject StateContainer StateContainer
@@ -9,9 +10,9 @@
 <div class="round-header">
     <RoundHeader RoundLoadedEvent=@RoundLoaded />
     <div class="display-end user-points">
-        <div>Round stake: <span class="bet-odds">@roundStake</span></div>
-        <div>Round points: <span class="bet-odds">@roundPoints</span></div>
-        <div>Total points: <span class="bet-odds">@totalPoints</span></div>
+        <div>Round stake: <span class="bet-odds float-end">@roundStake</span></div>
+        <div>Round points: <span class="bet-odds float-end">@roundPoints</span></div>
+        <div>Total points: <span class="bet-odds float-end">@totalPoints</span></div>
     </div>
 </div>
 
@@ -25,7 +26,7 @@
             {
                 <li>
                     <div class="inline">
-                        <a href="@GenerateGameLink(game)">
+                        <a href="@GenerateGameLink(game)" class="@GameLinkClass()">
                             <SingleGame Game="@game" />
                         </a>
                         <SingleBet BetSelection="@game.BetSelections.FirstOrDefault(x => x.User.Id == UserId)" />
@@ -83,9 +84,14 @@
 
     private string GenerateGameLink(Game game)
     {
-        if (IsCurrentUser && game.Time > DateTime.UtcNow)
+        if (!IsCurrentUser)
+            return "#";
+        else if (game.Time > DateTime.UtcNow)
             return $"/bets/{game.Code}";
         else
             return $"{Config.Feeds.GameStatsGuiPrefix}/{Config.CurrentSeasonSymbol}/{game.HomeTeam.Name.Replace(' ', '-')}-{game.AwayTeam.Name.Replace(' ', '-')}/{Config.CurrentSeasonCode}/{game.Code}/#boxscore";
     }
+
+    private string GameLinkClass() 
+        => !IsCurrentUser ? "disabled" : "";
 }

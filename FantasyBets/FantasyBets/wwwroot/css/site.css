@@ -198,11 +198,15 @@ a:visited {
 .user-points {
     font-size: 1.0rem;
     font-weight: 700;
-    min-width: 150px;
+    min-width: 200px;
 }
 
 .text-right {
     text-align: right;
     margin-right: 1rem;
     justify-content: flex-end;
+}
+
+a.disabled {
+    pointer-events: none;
 }
