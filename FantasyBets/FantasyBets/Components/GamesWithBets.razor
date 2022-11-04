@@ -7,13 +7,14 @@
 @inject CurrentRoundProvider CurrentRoundProvider
 @inject StateContainer StateContainer
 
-<div class="round-header">
+<div class="user-points">
+    <div>Round stake: <span class="bet-odds float-end">@roundStake</span></div>
+    <div>Round points: <span class="bet-odds float-end">@roundPoints</span></div>
+    <div>Total points: <span class="bet-odds float-end">@totalPoints</span></div>
+</div>
+<br/>
+<div class="center">
     <RoundHeader RoundLoadedEvent=@RoundLoaded />
-    <div class="display-end user-points">
-        <div>Round stake: <span class="bet-odds float-end">@roundStake</span></div>
-        <div>Round points: <span class="bet-odds float-end">@roundPoints</span></div>
-        <div>Total points: <span class="bet-odds float-end">@totalPoints</span></div>
-    </div>
 </div>
 
 @if (groupedGames is not null)
@@ -25,7 +26,7 @@
             @foreach (var game in day)
             {
                 <li>
-                    <div class="inline">
+                    <div class="inline-game">
                         <a href="@GenerateGameLink(game)" class="@GameLinkClass()">
                             <SingleGame Game="@game" />
                         </a>
@@ -92,6 +93,6 @@
             return $"{Config.Feeds.GameStatsGuiPrefix}/{Config.CurrentSeasonSymbol}/{game.HomeTeam.Name.Replace(' ', '-')}-{game.AwayTeam.Name.Replace(' ', '-')}/{Config.CurrentSeasonCode}/{game.Code}/#boxscore";
     }
 
-    private string GameLinkClass() 
+    private string GameLinkClass()
         => !IsCurrentUser ? "disabled" : "";
 }
