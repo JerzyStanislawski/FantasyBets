@@ -1,6 +1,7 @@
 ﻿@page "/UserBets/{userId}"
 @using FantasyBets.Components
 @using FantasyBets.Data
+@using FantasyBets.Extensions
 @using FantasyBets.Services
 
 @inject UserManager<FantasyUser> UserManager;
@@ -22,7 +23,7 @@
     {
         var user = await UserManager.FindByIdAsync(UserId);
 
-        betSelections = user.BetSelections;
+        betSelections = user.BetSelections?.Where(x => x.Game.Started());
         userName = user.Email;
     }
 }

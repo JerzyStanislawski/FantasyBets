@@ -1,5 +1,6 @@
 ﻿@using FantasyBets.Components
 @using FantasyBets.Data
+@using FantasyBets.Extensions
 @using FantasyBets.Services
 @using Microsoft.AspNetCore.WebUtilities
 
@@ -87,7 +88,7 @@
     {
         if (!IsCurrentUser)
             return "#";
-        else if (game.Time > DateTime.UtcNow)
+        else if (!game.Started())
             return $"/bets/{game.Code}";
         else
             return $"{Config.Feeds.GameStatsGuiPrefix}/{Config.CurrentSeasonSymbol}/{game.HomeTeam.Name.Replace(' ', '-')}-{game.AwayTeam.Name.Replace(' ', '-')}/{Config.CurrentSeasonCode}/{game.Code}/#boxscore";

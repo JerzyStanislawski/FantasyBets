@@ -32,6 +32,7 @@ namespace FantasyBets.Logic.Parsers
             if (!roundJson!.Data.Any())
                 return round;
 
+            var cet = TimeZoneInfo.FindSystemTimeZoneById("Central European Standard Time");
             foreach (var game in roundJson!.Data)
             {
                 if (game is null || game.Home is null || game.Away is null)
@@ -40,10 +41,10 @@ namespace FantasyBets.Logic.Parsers
                 round.Games.Add(new Game
                 {
                     Code = game.Code,
-                    Time = game.Date,
+                    Time = TimeZoneInfo.ConvertTime(game.Date, cet),
                     HomeTeam = await _dataProvider.GetTeamBySymbol(game.Home.Tla!) ?? ConvertTeam(game.Home),
                     AwayTeam = await _dataProvider.GetTeamBySymbol(game.Away.Tla!) ?? ConvertTeam(game.Away),
-                });
+                }); ;
             }
 
             var seasons = roundJson!.Data.Select(x => x.Season).Distinct();

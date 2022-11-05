@@ -58,11 +58,11 @@
     position: fixed;
     z-index: 20;
     top: 3.5rem;
-    left: 250px;
-    right: 0px;
     display: flex;
     align-content: center;
     justify-content: center;
+    width: 100%;
+    margin-left: -2rem;
 }
 .bets_main {
     position: relative;

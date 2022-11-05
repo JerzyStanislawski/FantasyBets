@@ -104,9 +104,16 @@ article {
 
 .data-time {
     display: inline-flex;
-    width: 4rem;
     align-items: center;
     justify-content: center;
+}
+
+.date-width {
+    width: 7rem;
+}
+
+.time-width {
+    width: 4rem;
 }
 
 .data-home-team {
@@ -221,6 +228,12 @@ a.disabled {
     width: 50%;
 }
 
+.ranking-table {
+    font-size: 1.1rem;
+    font-weight: 700;
+    min-width: 25rem;
+}
+
 @media (max-width: 70rem) {
     .data-home-team {
         width: 10rem;
@@ -236,6 +249,10 @@ a.disabled {
 
     .bet-selection {
         margin-bottom: 3rem;
-        margin-left: 4rem;
+        margin-left: 1rem;
+    }
+
+    .data-time {
+        display:none;
     }
 }

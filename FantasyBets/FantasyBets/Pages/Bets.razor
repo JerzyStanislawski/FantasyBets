@@ -1,6 +1,7 @@
 ﻿@page "/bets/{gameCode:int}"
 @using FantasyBets.Components
 @using FantasyBets.Data
+@using FantasyBets.Extensions
 @using FantasyBets.Model.Bets
 @using FantasyBets.Services
 
@@ -15,7 +16,7 @@
 </div>
 
 <div class="bets_main">
-    @if (game.Time < DateTime.UtcNow)
+    @if (game.Started())
     {
         <div class="center">
             <h4 class="validation-message bet_message">Betting not allowed.</h4>
@@ -80,7 +81,7 @@
 
     private async Task SelectionClicked(GameBetSelection selection, GameBet gameBet)
     {
-        if (game.Time < DateTime.UtcNow)
+        if (game.Started())
         {
             NavigationManager.NavigateTo($"/bets/{GameCode}");
         }
