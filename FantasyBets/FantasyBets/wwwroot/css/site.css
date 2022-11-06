@@ -200,6 +200,11 @@ a:visited {
     margin-left: auto;
 }
 
+.round-arrows {
+    margin-left: 0.5rem;
+    margin-bottom: 0.2rem;
+}
+
 .user-points {
     font-size: 1.0rem;
     font-weight: 700;
