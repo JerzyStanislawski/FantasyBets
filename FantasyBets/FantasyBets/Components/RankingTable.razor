@@ -1,4 +1,5 @@
-﻿
+﻿@using System.Net.Mail
+
 <div>
     <ul>
         @{
@@ -9,7 +10,7 @@
             <li class="center ranking-table">
                 <a href="/UserBets/@user.Id" class="inline">
                     <p class="width8percent inline text-right">@(iterator++).</p>
-                    <p class="width50percent inline">@user.Name</p>
+                    <p class="width50percent inline">@(new MailAddress(user.Name).User)</p>
                     <p class="width16percent inline text-right">@user.Points</p>
                 </a>
             </li>

@@ -5,17 +5,17 @@
 @inject Configuration Config
 @inject CurrentRoundProvider CurrentRoundProvider
 
-<h2>
+<h3 class="round-header" >
     @if (roundNumber > 1)
     {
-        <a href="" @onclick="PreviousRound" @onclick:preventDefault><img srcset="/images/left-arrow.png" width="24" height="24" class="round-arrows"></a>
+        <a href="" @onclick="PreviousRound" @onclick:preventDefault><img srcset="/images/left-arrow.png" width="20" height="20" class="round-arrows"></a>
     }
     Round @roundNumber, @String.Format("{0:00}", round.StartTime.Day) - @round.EndTime.ToShortDateString()
     @if (roundNumber < roundsInSeason.Count())
     {
-        <a href="" @onclick="NextRound" @onclick:preventDefault><img srcset="/images/right-arrow.png" width="24" height="24" class="round-arrows"></a>
+        <a href="" @onclick="NextRound" @onclick:preventDefault><img srcset="/images/right-arrow.png" width="20" height="20" class="round-arrows"></a>
     }
-</h2>
+</h3>
 
 @code {
     int roundNumber;

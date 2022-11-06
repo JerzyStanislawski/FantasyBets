@@ -202,7 +202,12 @@ a:visited {
 
 .round-arrows {
     margin-left: 0.5rem;
-    margin-bottom: 0.2rem;
+    margin-bottom: 0.3rem;
+}
+
+.round-header {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
 }
 
 .user-points {
