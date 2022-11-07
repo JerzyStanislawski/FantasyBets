@@ -20,7 +20,6 @@
 }
 .bet_item {
     display: inline-block;
-    width: 25%;
     margin-bottom: 5px;
 }
 .bet_item_description {
@@ -68,4 +67,18 @@
     position: relative;
     z-index: 0;
     top: 7rem;
+}
+.width50percent {
+    width: 50%;
+}
+.width33percent {
+    width: 33%;
+}
+
+@media (max-width: 70rem) {
+
+    .bet_item {
+        display: block;
+        width: 90%;
+    }
 }

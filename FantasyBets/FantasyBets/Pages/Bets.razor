@@ -39,7 +39,7 @@
                     <div>
                         @foreach (var selection in selectionGroup)
                         {
-                            <div class="bet_item">
+                            <div class="bet_item @BetWidth(selectionGroup.Count())">
                                 <div class="bet_item_description bet_font">@selection.Name</div>
                                 <div class="bet_item_odds bet_font" @onclick="@(() => SelectionClicked(@selection, bet))">@selection.Odds</div>
                             </div>
@@ -90,4 +90,7 @@
 
         NavigationManager.NavigateTo("/");
     }
+
+    private string BetWidth(int groupCount)
+        => groupCount == 3 ? "width33percent" : "width50percent";
 }
