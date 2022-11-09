@@ -6,6 +6,8 @@
 @inject StateContainer StateContainer
 @inject UserManager<FantasyUser> UserManager
 @inject IDbContextFactory<DataContext> DbContextFactory
+@inject LoggedUserService LoggedUserService;
+@inject StateContainer StateContainer
 
 <PageTitle>FantasyBets</PageTitle>
 
@@ -16,7 +18,7 @@
 
     <main>
         <div class="top-row px-4">
-            <span>@user!.Identity!.Name</span>
+            <span>@user?.Identity?.Name</span>
             <a href="/Identity/Account/Logout">Logout</a>
         </div>
 
@@ -33,30 +35,22 @@
 
     protected async override Task OnInitializedAsync()
     {
-        base.OnInitialized();
+        await base.OnInitializedAsync();
 
-        if (AuthStat is null)
-            throw new InvalidOperationException("Could not load authentication state.");;
-
-        user = (await AuthStat).User;
-        if (user is null || user.Identity is null)
-            throw new InvalidOperationException("Could not get user identity.");
-                    
-        if(!user.Identity.IsAuthenticated)
+        if (StateContainer.CurrentUser is null)
         {
-            NavigationManager.NavigateTo($"/Identity/Account/Login");
+            try
+            {
+                user = await LoggedUserService.SetLoggedUser(AuthStat);
+                if (!user!.Identity!.IsAuthenticated)
+                {
+                    NavigationManager.NavigateTo($"/Identity/Account/Login");                    
+                }
+            }
+            catch
+            {
+                NavigationManager.NavigateTo($"/Identity/Account/Login");
+            }
         }
-                
-        var id = UserManager.GetUserId(user);
-
-        using var dbContext = await DbContextFactory.CreateDbContextAsync();
-        StateContainer.CurrentUser = await dbContext.Users
-            .Include(x => x.BetSelections)
-            .ThenInclude(x => x.BetType)
-            .Include(x => x.BetSelections)
-            .ThenInclude(x => x.Game)
-            .ThenInclude(x => x.Round)
-            .ThenInclude(x => x.Season)
-            .FirstAsync(x => x.Id == id);
     }
 }

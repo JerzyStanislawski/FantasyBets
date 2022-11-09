@@ -5,9 +5,38 @@
 @using Microsoft.AspNetCore.WebUtilities
 @inject Configuration Config
 @inject StateContainer StateContainer
+@inject LoggedUserService LoggedUserService;
+@inject NavigationManager NavigationManager
 
 <PageTitle>My Bets</PageTitle>
 
 <GamesWithBets UserId="@StateContainer.CurrentUser?.Id"
                IsCurrentUser="@true" 
                BetSelections="@StateContainer.CurrentUser?.BetSelections" />
+               
+@code{
+    [CascadingParameter] 
+    protected Task<AuthenticationState> AuthStat { get; set; } = null!;
+    System.Security.Claims.ClaimsPrincipal user = null!;
+
+    protected async override Task OnInitializedAsync()
+    {
+        if (StateContainer.CurrentUser is null)
+        {
+            try
+            {
+                user = await LoggedUserService.SetLoggedUser(AuthStat);
+                if (!user!.Identity!.IsAuthenticated)
+                {
+                    NavigationManager.NavigateTo($"/Identity/Account/Login");                    
+                }
+            }
+            catch
+            {
+                NavigationManager.NavigateTo($"/Identity/Account/Login");
+            }
+        }
+
+        await base.OnInitializedAsync();
+    }
+}

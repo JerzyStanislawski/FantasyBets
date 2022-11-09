@@ -53,6 +53,7 @@ builder.Services.AddSingleton<BetsEvaluator>();
 builder.Services.AddSingleton(builder.Configuration.Get<Configuration>());
 builder.Services.AddSingleton<BettingService>();
 
+builder.Services.AddScoped<LoggedUserService>();
 builder.Services.AddScoped<StateContainer>();
 
 var app = builder.Build();
