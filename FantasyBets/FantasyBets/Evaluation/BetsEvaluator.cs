@@ -29,11 +29,13 @@ namespace FantasyBets.Evaluation
                 if (!_evaluators.TryGetValue(betSelection.BetType.BetCode, out var evaluator))
                     throw new NotImplementedException($"Could not find evaluator for {betSelection.BetType.BetCode}");
 
-                betSelection.Result = evaluator.Evaluate(betSelection, gameStats);
+                var result = evaluator.Evaluate(betSelection, gameStats);
 
                 using var dbContext = await _dbContextFactory.CreateDbContextAsync();
 
                 dbContext.Attach(betSelection);
+                betSelection.Result = result;
+
                 await dbContext.SaveChangesAsync();
             }
         }
