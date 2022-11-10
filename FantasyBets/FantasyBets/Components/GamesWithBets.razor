@@ -13,7 +13,7 @@
     <div>Round points: <span class="bet-odds float-end">@roundPoints</span></div>
     <div>Total points: <span class="bet-odds float-end">@totalPoints</span></div>
 </div>
-<br/>
+<br />
 <div class="center">
     <RoundHeader RoundLoadedEvent=@RoundLoaded />
 </div>
@@ -31,7 +31,9 @@
                         <a href="@GenerateGameLink(game)" class="@GameLinkClass()">
                             <SingleGame Game="@game" />
                         </a>
-                        <SingleBet BetSelection="@game.BetSelections.FirstOrDefault(x => x.User.Id == UserId)" />
+                        <SingleBet BetSelection="@(game.Started() || IsCurrentUser
+                                                    ? @game.BetSelections.FirstOrDefault(x => x.User.Id == UserId)
+                                                    : null)" />
                     </div>
                 </li>
             }

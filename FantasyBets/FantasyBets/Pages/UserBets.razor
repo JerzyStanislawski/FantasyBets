@@ -5,6 +5,7 @@
 @using FantasyBets.Services
 
 @inject UserManager<FantasyUser> UserManager;
+@inject IDbContextFactory<DataContext> DbContextFactory;
 
 <PageTitle>Bets - @userName</PageTitle>
 
@@ -23,7 +24,15 @@
     {
         var user = await UserManager.FindByIdAsync(UserId);
 
-        betSelections = user.BetSelections?.Where(x => x.Game.Started());
+        using var dbContext = await DbContextFactory.CreateDbContextAsync();
+        var dbUser = dbContext.Users
+            .Include(x => x.BetSelections)
+            .ThenInclude(x => x.Game)
+            .ThenInclude(x => x.Round)
+            .ThenInclude(x => x.Season)
+            .First(x => x.Id == user.Id);
+
+        betSelections = dbUser.BetSelections?.Where(x => x.Game.Started());
         userName = user.Email;
     }
 }
