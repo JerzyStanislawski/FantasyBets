@@ -41,20 +41,26 @@ namespace FantasyBets.Evaluation
 
         public static PlayerStats? GetPlayerStats(GameStats gameStats, string playerFromBet)
         {
-            var player = playerFromBet.Trim().Split(' ');
-            var playerNameOrInitial = player[0].Trim('.');
-            var playerSurname = player[1];
+            var spacePos = playerFromBet.Trim().IndexOf(' ');
+            var playerNameOrInitial = playerFromBet[0..(spacePos - 1)].Trim('.');
+            var playerSurname = playerFromBet[spacePos..].Trim();
 
             var statsLine = gameStats.PlayerStats.SingleOrDefault(x => IsPlayerFromStats(x.Key, playerSurname, playerNameOrInitial));
+            if (statsLine.Value is null)
+            {
+                var allSurnamesDistinct = gameStats.PlayerStats.Keys.Select(x => x.Split(',')[0].Trim()).Distinct().Count() == gameStats.PlayerStats.Count();
+                if (allSurnamesDistinct)
+                    statsLine = gameStats.PlayerStats.SingleOrDefault(x => IsPlayerFromStats(x.Key, playerSurname, null));
+            }
             return statsLine.Value is null ? null : statsLine.Value;
         }
 
-        private static bool IsPlayerFromStats(string playerFromStats, string playerSurname, string playerNameOrInitial)
+        private static bool IsPlayerFromStats(string playerFromStats, string playerSurname, string? playerNameOrInitial)
         {
             var parts = playerFromStats.Split(',');
 
             return String.Equals(parts[0].Trim(), playerSurname, StringComparison.InvariantCultureIgnoreCase)
-                && parts[1].Trim().StartsWith(playerNameOrInitial.ToUpper());
+                && (playerNameOrInitial is null || parts[1].Trim().StartsWith(playerNameOrInitial.ToUpper()));
         }
 
         public static int PointsInHalftime(ScoreByQuarter scoreByQuarter)

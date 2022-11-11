@@ -22,7 +22,7 @@ namespace FantasyBets.Services
             GameStatsParser gameStatsParser,
             Configuration configuration,
             BetsEvaluator betsEvaluator,
-            ILogger<UpdateBetsHostedService> logger)
+            ILogger<GameStatsHostedService> logger)
         {
             _dbContextFactory = dbContextFactory;
             _httpClientFactory = httpClientFactory;
@@ -49,7 +49,7 @@ namespace FantasyBets.Services
                         .ThenInclude(x => x.AwayTeam)
                         .Include(x => x.Games)
                         .ThenInclude(x => x.HomeTeam)
-                        .FirstOrDefault(x => x.StartTime < DateTime.UtcNow && x.EndTime.AddHours(24) > DateTime.UtcNow);
+                        .FirstOrDefault(x => x.StartTime < DateTime.UtcNow && x.EndTime.AddHours(48) > DateTime.UtcNow);
 
                     if (currentRound is not null)
                     {
@@ -76,8 +76,11 @@ namespace FantasyBets.Services
 
         private async Task TrackGames(Round currentRound)
         {
-            var games = currentRound.Games.Where(x => x.Time < DateTime.UtcNow && x.Time.AddHours(24) > DateTime.UtcNow
+            _logger.LogInformation("Tracking games");
+            var games = currentRound.Games.Where(x => x.Time < DateTime.UtcNow && x.Time.AddHours(48) > DateTime.UtcNow
                 && x.BetSelections.Any(x => x.Result == BetResult.Pending));
+
+            _logger.LogInformation("Games to track: {count}", games.Count());
 
             var tasks = new List<Task>();
             foreach (var game in games)
@@ -93,6 +96,7 @@ namespace FantasyBets.Services
 
         private async Task TrackGame(Game game)
         {
+            _logger.LogInformation("Tracking game {code} {homeTeam}-{awayTeam}", game.Code, game.HomeTeam.Name, game.AwayTeam.Name);
             var httpClient = _httpClientFactory.CreateClient();
             var url = String.Format(_configuration.Feeds.GameStats, game.Code, _configuration.CurrentSeasonCode);
             try
@@ -104,15 +108,16 @@ namespace FantasyBets.Services
                 }
                 var payload = await response.Content.ReadAsStringAsync();
                 var gameStats = _gameStatsParser.Parse(payload);
+                _logger.LogInformation("Game parsed {code}, {isLive}", game.Code, gameStats?.IsLive);
 
                 if (gameStats != null && !gameStats.IsLive && gameStats.ScoreHomeTeam > 0 && gameStats.ScoreAwayTeam > 0)
                 {
-                    await _betsEvaluator.Evaluate(game.BetSelections, gameStats!);
+                    await _betsEvaluator.Evaluate(game.BetSelections.Where(x => x.Result == BetResult.Pending), gameStats!);
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Error downloading game stats, url: {url}");
+                _logger.LogError(ex, "Error processing game stats, url: {url}", url);
             }
         }
     }

@@ -6,13 +6,6 @@ namespace FantasyBets.Logic.Parsers
 {
     public class GameStatsParser
     {
-        private readonly Configuration _configuration;
-
-        public GameStatsParser(Configuration configuration)
-        {
-            _configuration = configuration;
-        }
-
         public GameStats? Parse(string gamePayload)
         {
             var jsonGameStats = JsonSerializer.Deserialize<JsonGameStats>(gamePayload, new JsonSerializerOptions

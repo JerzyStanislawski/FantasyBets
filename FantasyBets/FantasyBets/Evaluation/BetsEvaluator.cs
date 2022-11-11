@@ -12,11 +12,13 @@ namespace FantasyBets.Evaluation
         private readonly ReadOnlyDictionary<BetCode, BaseEvaluator> _evaluators;
         private readonly IDbContextFactory<DataContext> _dbContextFactory;
         private readonly Configuration _configuration;
+        private readonly ILogger<BetsEvaluator> _logger;
 
-        public BetsEvaluator(IDbContextFactory<DataContext> dbContextFactory, Configuration configuration)
+        public BetsEvaluator(IDbContextFactory<DataContext> dbContextFactory, Configuration configuration, ILogger<BetsEvaluator> logger)
         {
             _dbContextFactory = dbContextFactory;
             _configuration = configuration;
+            _logger = logger;
 
             var evaluators = ScanEvaluators();
             _evaluators = new ReadOnlyDictionary<BetCode, BaseEvaluator>(evaluators);
@@ -26,10 +28,9 @@ namespace FantasyBets.Evaluation
         {
             foreach (var betSelection in betSelections)
             {
-                if (!_evaluators.TryGetValue(betSelection.BetType.BetCode, out var evaluator))
-                    throw new NotImplementedException($"Could not find evaluator for {betSelection.BetType.BetCode}");
-
-                var result = evaluator.Evaluate(betSelection, gameStats);
+                _logger.LogInformation("Evaluating bet: {betId}, {betName}", betSelection.Id, betSelection.Name);
+                var result = EvaluateEvent(betSelection, gameStats);
+                _logger.LogInformation("Evaluation result: {result}, {betId}, {betName}", result.ToString(), betSelection.Id, betSelection.Name);
 
                 using var dbContext = await _dbContextFactory.CreateDbContextAsync();
 
@@ -37,7 +38,16 @@ namespace FantasyBets.Evaluation
                 betSelection.Result = result;
 
                 await dbContext.SaveChangesAsync();
+                _logger.LogInformation("Bet result stored: {betId}, {betName}", betSelection.Id, betSelection.Name);
             }
+        }
+
+        public BetResult EvaluateEvent(BetSelection betSelection, GameStats gameStats)
+        {
+            if (!_evaluators.TryGetValue(betSelection.BetType.BetCode, out var evaluator))
+                throw new NotImplementedException($"Could not find evaluator for {betSelection.BetType.BetCode}");
+
+            return evaluator.Evaluate(betSelection, gameStats);
         }
 
         private Dictionary<BetCode, BaseEvaluator> ScanEvaluators()
