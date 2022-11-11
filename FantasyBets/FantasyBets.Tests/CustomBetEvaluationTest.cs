@@ -23,10 +23,10 @@ namespace FantasyBets.Tests
             {
                 BetType = new BetType
                 {
-                    BetCode = BetCode.Winner3Quarter
+                    BetCode = BetCode.BothPlayersScore20OrMore
                 },
                 Game = dataContext.Rounds!.SelectMany(x => x.Games).Include(x => x.HomeTeam).Include(x => x.AwayTeam).First(x => x.Code == gameCode),
-                Name = "Olympiakos",
+                Name = "A. Vezenkov & K. Punter",
                 Result = BetResult.Pending
             };
 

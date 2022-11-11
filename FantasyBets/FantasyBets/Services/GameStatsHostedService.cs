@@ -49,7 +49,7 @@ namespace FantasyBets.Services
                         .ThenInclude(x => x.AwayTeam)
                         .Include(x => x.Games)
                         .ThenInclude(x => x.HomeTeam)
-                        .FirstOrDefault(x => x.StartTime < DateTime.UtcNow && x.EndTime.AddHours(48) > DateTime.UtcNow);
+                        .FirstOrDefault(x => x.StartTime < DateTime.UtcNow && x.EndTime.AddHours(4) > DateTime.UtcNow);
 
                     if (currentRound is not null)
                     {
@@ -77,7 +77,7 @@ namespace FantasyBets.Services
         private async Task TrackGames(Round currentRound)
         {
             _logger.LogInformation("Tracking games");
-            var games = currentRound.Games.Where(x => x.Time < DateTime.UtcNow && x.Time.AddHours(48) > DateTime.UtcNow
+            var games = currentRound.Games.Where(x => x.Time < DateTime.UtcNow && x.Time.AddHours(4) > DateTime.UtcNow
                 && x.BetSelections.Any(x => x.Result == BetResult.Pending));
 
             _logger.LogInformation("Games to track: {count}", games.Count());

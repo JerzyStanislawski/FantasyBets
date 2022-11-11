@@ -14,7 +14,9 @@ namespace FantasyBets.Evaluation.Implementations
 
         protected override BetResult EvaluateInternal(BetSelection betSelection, GameStats gameStats)
         {
-            var players = betSelection.Name.Split('/');
+            var players = betSelection.Name.Split('&');
+            if (players.Count() < 2)
+                players = betSelection.Name.Split('/');
 
             var statsLine1 = EvaluationHelpers.GetPlayerStats(gameStats, players[0].Trim());
             var statsLine2 = EvaluationHelpers.GetPlayerStats(gameStats, players[1].Trim());
