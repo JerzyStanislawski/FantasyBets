@@ -2,6 +2,7 @@
 using FantasyBets.Logic.Parsers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace FantasyBets.Tests
 {
@@ -39,7 +40,7 @@ namespace FantasyBets.Tests
             var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
 
             //act
-            var evaluator = new BetsEvaluator(null!, config.Get<Configuration>());
+            var evaluator = new BetsEvaluator(null!, config.Get<Configuration>(), new LoggerFactory().CreateLogger<BetsEvaluator>());
             var result = evaluator.EvaluateEvent(betSelection, gameStats);
 
             //assert
