@@ -55,6 +55,7 @@ builder.Services.AddSingleton<BettingService>();
 
 builder.Services.AddScoped<LoggedUserService>();
 builder.Services.AddScoped<StateContainer>();
+builder.Services.AddApplicationInsightsTelemetry(builder.Configuration["APPINSIGHTS_CONNECTIONSTRING"]);
 
 var app = builder.Build();
 
