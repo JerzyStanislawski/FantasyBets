@@ -14,7 +14,6 @@ namespace FantasyBets.Services
         private readonly BetsEvaluator _betsEvaluator;
         private readonly ILogger _logger;
         private readonly PeriodicTimer _timer;
-        private PeriodicTimer? _roundTimer;
 
         public GameStatsHostedService(
             IDbContextFactory<DataContext> dbContextFactory,
@@ -30,7 +29,7 @@ namespace FantasyBets.Services
             _configuration = configuration;
             _betsEvaluator = betsEvaluator;
             _logger = logger;
-            _timer = new PeriodicTimer(TimeSpan.FromHours(1));
+            _timer = new PeriodicTimer(TimeSpan.FromMinutes(5));
         }
 
         protected async override Task ExecuteAsync(CancellationToken cancellationToken)
@@ -40,8 +39,8 @@ namespace FantasyBets.Services
                 try
                 {
                     _logger.LogInformation("Checking game stats");
-                    using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-                    var currentRound = dbContext.Rounds!
+                    using var dbContext = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
+                    var games = dbContext.Rounds!
                         .Include(x => x.Games)
                         .ThenInclude(x => x.BetSelections)
                         .ThenInclude(x => x.BetType)
@@ -49,19 +48,16 @@ namespace FantasyBets.Services
                         .ThenInclude(x => x.AwayTeam)
                         .Include(x => x.Games)
                         .ThenInclude(x => x.HomeTeam)
-                        .FirstOrDefault(x => x.StartTime < DateTime.UtcNow && x.EndTime.AddHours(4) > DateTime.UtcNow);
+                        .SelectMany(x => x.Games)
+                        .Where(x => x.BetSelections.Any(b => b.Result == BetResult.Pending));
 
-                    if (currentRound is not null)
+                    if (games.Any())
                     {
-                        if (_roundTimer is null)
-                            _roundTimer = new PeriodicTimer(TimeSpan.FromMinutes(1));
-                        await TrackGames(currentRound);
+                        await TrackGames(games);
                     }
                     else
                     {
-                        _roundTimer?.Dispose();
-                        _roundTimer = null;
-                        _logger.LogInformation("No active rounds");
+                        _logger.LogInformation("No games to track");
                     }
                 }
                 catch (Exception ex)
@@ -69,17 +65,11 @@ namespace FantasyBets.Services
                     _logger.LogError(ex, "Error processing game stats.");
                 }
             }
-            while (((_roundTimer != null && await _roundTimer!.WaitForNextTickAsync(cancellationToken))
-                || await _timer.WaitForNextTickAsync(cancellationToken))
-                && !cancellationToken.IsCancellationRequested);
+            while (await _timer.WaitForNextTickAsync(cancellationToken) && !cancellationToken.IsCancellationRequested);
         }
 
-        private async Task TrackGames(Round currentRound)
+        private async Task TrackGames(IEnumerable<Game> games)
         {
-            _logger.LogInformation("Tracking games");
-            var games = currentRound.Games.Where(x => x.Time < DateTime.UtcNow && x.Time.AddHours(4) > DateTime.UtcNow
-                && x.BetSelections.Any(x => x.Result == BetResult.Pending));
-
             _logger.LogInformation("Games to track: {count}", games.Count());
 
             var tasks = new List<Task>();
