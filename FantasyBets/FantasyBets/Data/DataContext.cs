@@ -21,8 +21,16 @@ namespace FantasyBets.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Season>().HasMany(s => s.Rounds).WithOne(r => r.Season);
-            modelBuilder.Entity<Round>().HasMany(r => r.Games).WithOne(g => g.Round);
+            modelBuilder.Entity<Season>(entity =>
+            {
+                entity.HasMany(s => s.Rounds).WithOne(r => r.Season);
+                entity.HasIndex(s => s.Code);
+            });
+            modelBuilder.Entity<Round>(entity =>
+            {
+                entity.HasMany(r => r.Games).WithOne(g => g.Round);
+                entity.HasIndex(r => r.Number);
+            });
             modelBuilder.Entity<Team>(entity =>
             {
                 entity.HasMany(t => t.GamesAsHome).WithOne(g => g.HomeTeam).HasForeignKey(g => g.HomeTeamId);
@@ -30,9 +38,10 @@ namespace FantasyBets.Data
             });
             modelBuilder.Entity<BetSelection>(entity =>
             {
-                entity.HasOne(s => s.BetType).WithMany(b => b.BetSelections).OnDelete(DeleteBehavior.NoAction);
-                entity.HasOne(s => s.Game).WithMany(g => g.BetSelections).HasForeignKey(x => x.GameId).OnDelete(DeleteBehavior.NoAction);
-                entity.HasOne(s => s.User).WithMany(u => u.BetSelections).HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.NoAction);
+                entity.HasOne(b => b.BetType).WithMany(b => b.BetSelections).OnDelete(DeleteBehavior.NoAction);
+                entity.HasOne(b => b.Game).WithMany(g => g.BetSelections).HasForeignKey(x => x.GameId).OnDelete(DeleteBehavior.NoAction);
+                entity.HasOne(b => b.User).WithMany(u => u.BetSelections).HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.NoAction);
+                entity.HasIndex(b => b.Result);
             });
         }
     }
