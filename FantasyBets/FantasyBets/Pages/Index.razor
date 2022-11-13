@@ -10,14 +10,19 @@
 
 <PageTitle>My Bets</PageTitle>
 
-<GamesWithBets UserId="@StateContainer.CurrentUser?.Id"
-               IsCurrentUser="@true" 
-               BetSelections="@StateContainer.CurrentUser?.BetSelections" />
+@if (StateContainer.CurrentUser is not null)
+{
+    <GamesWithBets UserId="@StateContainer.CurrentUser!.Id"
+                   IsCurrentUser="@true" 
+                   BetSelections="@StateContainer.CurrentUser!.BetSelections" />
+}
                
 @code{
     [CascadingParameter] 
     protected Task<AuthenticationState> AuthStat { get; set; } = null!;
     System.Security.Claims.ClaimsPrincipal user = null!;
+
+    private bool loaded = false;
 
     protected async override Task OnInitializedAsync()
     {

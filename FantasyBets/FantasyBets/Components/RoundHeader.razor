@@ -40,7 +40,7 @@
 
         if (roundNumber == 0)
         {
-            roundNumber = await CurrentRoundProvider.GetCurrentRoundNumber() - 1;
+            roundNumber = await CurrentRoundProvider.GetCurrentRoundNumber();
         }
 
         round = roundsInSeasonQueryable

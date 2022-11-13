@@ -9,9 +9,12 @@
 
 <PageTitle>Bets - @userName</PageTitle>
 
-<GamesWithBets UserId="@UserId"
-               IsCurrentUser="@false" 
+@if (loaded)
+{
+    <GamesWithBets UserId="@UserId"
+               IsCurrentUser="@false"
                BetSelections="@betSelections" />
+}
 
 @code {
     [Parameter]
@@ -19,6 +22,7 @@
 
     private IEnumerable<BetSelection>? betSelections;
     private string userName = null!;
+    private bool loaded = false;
 
     protected async override Task OnInitializedAsync()
     {
@@ -34,5 +38,7 @@
 
         betSelections = dbUser.BetSelections?.Where(x => x.Game.Started());
         userName = user.Email;
+
+        loaded = true;
     }
 }
