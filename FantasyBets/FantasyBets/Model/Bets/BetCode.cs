@@ -60,8 +60,6 @@ namespace FantasyBets.Model.Bets
         PlayerScores25OrMoreAndHisTeamWins, // Gracz zdobędzie 25 punktów lub więcej i jego zespół wygra
         [JsonPropertyName("Bkb_30W")]
         PlayerScores30OrMoreAndHisTeamWins, // Gracz zdobędzie 30 punktów lub więcej i jego zespół wygra
-        [JsonPropertyName("Bkb_Mot")]
-        Overtime, // Dogrywka (Tak/Nie)
         [JsonPropertyName("Bkb_Htf")]
         WinnerHalfAndTotal, // Połowa / Cały
         [JsonPropertyName("Bkb_Htt")]

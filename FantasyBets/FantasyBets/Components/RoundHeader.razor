@@ -10,7 +10,7 @@
     {
         <a href="" @onclick="PreviousRound" @onclick:preventDefault><img srcset="/images/left-arrow.png" width="20" height="20" class="round-arrows"></a>
     }
-    Round @roundNumber, @String.Format("{0:00}", round.StartTime.Day) - @round.EndTime.ToShortDateString()
+    Round @roundNumber, @String.Format("{0:00}", round.StartTime.Day) - @round.EndTime.ToString("dd.MM.yyyy")
     @if (roundNumber < roundsInSeason.Count())
     {
         <a href="" @onclick="NextRound" @onclick:preventDefault><img srcset="/images/right-arrow.png" width="20" height="20" class="round-arrows"></a>
