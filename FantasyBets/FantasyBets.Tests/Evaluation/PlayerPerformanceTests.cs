@@ -195,7 +195,7 @@
                     BetCode = BetCode.PlayerPerformance
                 },
                 Game = Fakes.Game(),
-                Name = "Jan Vesely - powyżej 16.5",
+                Name = "Jan Vesely - powyzej 16.5",
                 Result = BetResult.Pending
             };
             var gameStats = new GameStats

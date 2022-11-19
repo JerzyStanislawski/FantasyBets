@@ -13,7 +13,7 @@
                     BetCode = BetCode.PlayerTotalPointsAndAssists
                 },
                 Game = Fakes.Game(),
-                Name = "T. Satoransky - powyżej 18.5",
+                Name = "T. Satoransky - powyzej 18.5",
                 Result = BetResult.Pending
             };
             var gameStats = new GameStats

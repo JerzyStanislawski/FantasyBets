@@ -28,9 +28,11 @@ namespace FantasyBets.Evaluation
         }
 
         protected bool HomeTeamBet(Game game, string teamName)
-            => String.Equals(_configuration.BettingFeedTeamNames[game.HomeTeam.Symbol], teamName, StringComparison.OrdinalIgnoreCase);
+            => String.Equals(_configuration.BettingFeedTeamNames[game.HomeTeam.Symbol], teamName, StringComparison.OrdinalIgnoreCase)
+                || _configuration.BettingFeedTeamNames[game.HomeTeam.Symbol].Contains(teamName, StringComparison.OrdinalIgnoreCase);
 
         protected bool AwayTeamBet(Game game, string teamName)
-            => String.Equals(_configuration.BettingFeedTeamNames[game.AwayTeam.Symbol], teamName, StringComparison.OrdinalIgnoreCase);
+            => String.Equals(_configuration.BettingFeedTeamNames[game.AwayTeam.Symbol], teamName, StringComparison.OrdinalIgnoreCase)
+                || _configuration.BettingFeedTeamNames[game.AwayTeam.Symbol].Contains(teamName, StringComparison.OrdinalIgnoreCase);
     }
 }

@@ -12,21 +12,22 @@ namespace FantasyBets.Tests
         public async Task EvaluationTest()
         {
             //arrange
-            int gameCode = 56;
+            int gameCode = 69;
 
             var dbFileName = $"../../../../FantasyBets/{nameof(DataContext.FantasyDb)}.db";
             var builder = new DbContextOptionsBuilder();
             builder.UseSqlite($"Data Source={dbFileName}");
             using var dataContext = new DataContext(builder.Options);
+            var games = dataContext.Rounds!.SelectMany(x => x.Games);
 
             var betSelection = new BetSelection
             {
                 BetType = new BetType
                 {
-                    BetCode = BetCode.BothPlayersScore20OrMore
+                    BetCode = BetCode.TotalPoints
                 },
                 Game = dataContext.Rounds!.SelectMany(x => x.Games).Include(x => x.HomeTeam).Include(x => x.AwayTeam).First(x => x.Code == gameCode),
-                Name = "A. Vezenkov & K. Punter",
+                Name = "Powyżej 159.5",
                 Result = BetResult.Pending
             };
 

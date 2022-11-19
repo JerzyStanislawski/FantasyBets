@@ -33,7 +33,8 @@ namespace FantasyBets.Evaluation
         public static Difference ParseDifference(string bet)
         {
             var parts = bet.Trim().Split(' ');
-            var moreThan = String.Equals(parts[0], EvaluationConsts.MoreThan, StringComparison.InvariantCultureIgnoreCase);
+            var moreThan = String.Equals(parts[0], EvaluationConsts.MoreThan, StringComparison.InvariantCultureIgnoreCase)
+                        || String.Equals(parts[0], EvaluationConsts.MoreThan2, StringComparison.InvariantCultureIgnoreCase);
             var value = decimal.Parse(parts[1], new NumberFormatInfo { NumberDecimalSeparator = "." });
 
             return new Difference(moreThan ? DifferenceType.MoreThan : DifferenceType.LessThan, value);

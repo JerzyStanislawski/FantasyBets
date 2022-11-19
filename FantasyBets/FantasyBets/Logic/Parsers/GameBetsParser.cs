@@ -44,7 +44,7 @@ namespace FantasyBets.Logic.Parsers
                 {
                     Id = bet.Id,
                     BetCode = betCode,
-                    Descripion = bet.Name,
+                    Descripion = bet.Name.Replace(',', '.'),
                     Selections = bet.Selections.Select(p => p.Select(x => new GameBetSelection
                     {
                         Id = x.Id,
