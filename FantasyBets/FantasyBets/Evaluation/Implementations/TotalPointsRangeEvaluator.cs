@@ -15,7 +15,7 @@ namespace FantasyBets.Evaluation.Implementations
 
         protected override BetResult EvaluateInternal(BetSelection betSelection, GameStats gameStats)
         {
-            var totalPoints = gameStats.ScoreHomeTeam + gameStats.ScoreAwayTeam;
+            var totalPoints = gameStats.HomeTeamStats.Points + gameStats.AwayTeamStats.Points;
 
             if (betSelection.Name.Contains('+'))
             {

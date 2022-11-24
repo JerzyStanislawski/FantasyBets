@@ -12,6 +12,6 @@ namespace FantasyBets.Evaluation.Implementations
         public override BetCode BetCode => BetCode.TotalPointsAway;
 
         protected override int GetStatsItem(GameStats gameStats)
-            => gameStats.ScoreAwayTeam;
+            => gameStats.AwayTeamStats.Points;
     }
 }

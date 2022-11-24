@@ -18,17 +18,17 @@ namespace FantasyBets.Evaluation.Implementations
 
             if (HomeTeamBet(betSelection.Game, parsedBet.Team))
             {
-                return gameStats.ScoreHomeTeam + parsedBet.Handicap > gameStats.ScoreAwayTeam
+                return gameStats.HomeTeamStats.Points + parsedBet.Handicap > gameStats.AwayTeamStats.Points
                     ? BetResult.Success
-                    : gameStats.ScoreHomeTeam + parsedBet.Handicap < gameStats.ScoreAwayTeam
+                    : gameStats.HomeTeamStats.Points + parsedBet.Handicap < gameStats.AwayTeamStats.Points
                         ? BetResult.Fail
                         : BetResult.Pending;
             }
             else if (AwayTeamBet(betSelection.Game, parsedBet.Team))
             {
-                return gameStats.ScoreHomeTeam < gameStats.ScoreAwayTeam + parsedBet.Handicap
+                return gameStats.HomeTeamStats.Points < gameStats.AwayTeamStats.Points + parsedBet.Handicap
                     ? BetResult.Success
-                    : gameStats.ScoreHomeTeam > gameStats.ScoreAwayTeam + parsedBet.Handicap
+                    : gameStats.HomeTeamStats.Points > gameStats.AwayTeamStats.Points + parsedBet.Handicap
                         ? BetResult.Fail
                         : BetResult.Pending;
             }

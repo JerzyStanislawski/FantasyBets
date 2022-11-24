@@ -16,13 +16,13 @@ namespace FantasyBets.Evaluation.Implementations
         {
             if (HomeTeamBet(betSelection.Game, betSelection.Name))
             {
-                return gameStats.ScoreHomeTeam > gameStats.ScoreAwayTeam
+                return gameStats.HomeTeamStats.Points > gameStats.AwayTeamStats.Points
                     ? BetResult.Success
                     : BetResult.Fail;
             }
             else if (AwayTeamBet(betSelection.Game, betSelection.Name))
             {
-                return gameStats.ScoreHomeTeam < gameStats.ScoreAwayTeam
+                return gameStats.HomeTeamStats.Points < gameStats.AwayTeamStats.Points
                     ? BetResult.Success
                     : BetResult.Fail;
             }

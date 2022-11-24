@@ -22,8 +22,8 @@ namespace FantasyBets.Evaluation.Implementations
                 var team = statsLine.TeamName;
                 var playerIsFromHomeTeam = gameStats.ScoreHomeTeamByQuarter.Team == team;
 
-                if ((playerIsFromHomeTeam && gameStats.ScoreHomeTeam > gameStats.ScoreAwayTeam)
-                    || (!playerIsFromHomeTeam && gameStats.ScoreHomeTeam < gameStats.ScoreAwayTeam))
+                if ((playerIsFromHomeTeam && gameStats.HomeTeamStats.Points > gameStats.AwayTeamStats.Points)
+                    || (!playerIsFromHomeTeam && gameStats.HomeTeamStats.Points < gameStats.AwayTeamStats.Points))
                 {
                     return BetResult.Success;
                 }
