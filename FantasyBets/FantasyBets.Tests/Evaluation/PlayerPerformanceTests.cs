@@ -221,5 +221,43 @@
             //assert
             result.Should().Be(BetResult.Success);
         }
+
+        [Fact]
+        public void PlayerPerformanceEvaluator_ShouldReturnProperResult_WhenPlayerSurnameWithHyphen()
+        {
+            //arrange
+            var betSelection = new BetSelection
+            {
+                BetType = new BetType
+                {
+                    BetCode = BetCode.PlayerPerformance
+                },
+                Game = Fakes.Game(),
+                Name = "N. Weiler-Babb - Ponizej 14.5",
+                Result = BetResult.Pending
+            };
+            var gameStats = new GameStats
+            {
+                PlayerStats = new Dictionary<string, PlayerStats>
+                {
+                    {"WEILER-BABB, NICK", new PlayerStats
+                        {
+                            Points = 7,
+                            Assists = 3,
+                            TotalRebounds = 4,
+                            Eval = 13,
+                            TeamSymbol = "BAR"
+                        }
+                    }
+                }
+            };
+            var evaluator = new PlayerPerformanceEvaluator(Fakes.Configuration());
+
+            //act
+            var result = evaluator.Evaluate(betSelection, gameStats);
+
+            //assert
+            result.Should().Be(BetResult.Success);
+        }
     }
 }

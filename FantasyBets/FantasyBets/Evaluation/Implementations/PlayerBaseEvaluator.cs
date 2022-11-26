@@ -11,15 +11,18 @@ namespace FantasyBets.Evaluation.Implementations
 
         protected override BetResult EvaluateInternal(BetSelection betSelection, GameStats gameStats)
         {
-            var parsed = betSelection.Name.Split('-');
-            var statsLine = EvaluationHelpers.GetPlayerStats(gameStats, parsed[0]);
+            var pos = betSelection.Name.LastIndexOf('-');
+            var name = betSelection.Name[..pos].Trim();
+            var expression = betSelection.Name[(pos + 1)..].Trim();
+
+            var statsLine = EvaluationHelpers.GetPlayerStats(gameStats, name);
 
             if (statsLine is null)
                 return BetResult.Cancelled;
 
             var statsValue = CalculateStatsValue(statsLine);
 
-            var difference = EvaluationHelpers.ParseDifference(parsed[1]);
+            var difference = EvaluationHelpers.ParseDifference(expression);
 
             return difference.Type == DifferenceType.MoreThan
                 ? (statsValue > difference.Value ? BetResult.Success : BetResult.Fail)

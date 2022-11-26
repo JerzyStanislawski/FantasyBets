@@ -3,6 +3,7 @@ using FantasyBets.Logic.Parsers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using System;
 
 namespace FantasyBets.Tests
 {
@@ -12,7 +13,7 @@ namespace FantasyBets.Tests
         public async Task EvaluationTest()
         {
             //arrange
-            int gameCode = 69;
+            int gameCode = 86;
 
             var dbFileName = $"../../../../FantasyBets/{nameof(DataContext.FantasyDb)}.db";
             var builder = new DbContextOptionsBuilder();
@@ -24,10 +25,10 @@ namespace FantasyBets.Tests
             {
                 BetType = new BetType
                 {
-                    BetCode = BetCode.TotalPoints
+                    BetCode = BetCode.PlayerPerformance
                 },
                 Game = dataContext.Rounds!.SelectMany(x => x.Games).Include(x => x.HomeTeam).Include(x => x.AwayTeam).First(x => x.Code == gameCode),
-                Name = "Powyżej 159.5",
+                Name = "N. Weiler-Babb - Ponizej 14.5",
                 Result = BetResult.Pending
             };
 
@@ -36,7 +37,7 @@ namespace FantasyBets.Tests
             var payload = await response.Content.ReadAsStringAsync();
             var gameStats = new GameStatsParser().Parse(payload);
             if (gameStats is null)
-                throw new Exeption("gameStats null");
+                throw new Exception("gameStats null");
           
             var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
 
