@@ -12,13 +12,13 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor()
     .AddCircuitOptions(options => { options.DetailedErrors = true; });
 
-//if (builder.Environment.IsDevelopment())
-//{
-//    var dbFileName = $"{nameof(DataContext.FantasyDb)}.db";
-//    builder.Services.AddDbContextFactory<DataContext>(opt =>
-//        opt.UseSqlite($"Data Source={dbFileName}"));
-//}
-//else
+if (builder.Environment.IsDevelopment())
+{
+    var dbFileName = $"{nameof(DataContext.FantasyDb)}.db";
+    builder.Services.AddDbContextFactory<DataContext>(opt =>
+        opt.UseSqlite($"Data Source={dbFileName}"));
+}
+else
 {
     builder.Services.AddDbContextFactory<DataContext>(opt =>
         opt.UseSqlServer(builder.Configuration.GetConnectionString("Data")));
