@@ -1,0 +1,67 @@
+﻿@page "/topbets"
+@using FantasyBets.Components
+@using FantasyBets.Data
+@using FantasyBets.Extensions
+@using static FantasyBets.Components.TopBetsTable
+
+@inject IDbContextFactory<DataContext> DbContextFactory
+@inject Configuration Config
+
+<div>
+    <TabControl>
+        <TabPage Text="Round">
+            <div class="topbets-round-header center">
+                <RoundHeader RoundLoadedEvent=@(async round => await RoundLoaded(round)) />
+            </div>
+            <TopBetsTable TopBets=@roundBets DisplayRound=@false />
+        </TabPage>
+        <TabPage Text="Total">
+            <div class="topbets-total">
+                <TopBetsTable TopBets=@totalBets DisplayRound=@true />
+            </div>
+        </TabPage>
+    </TabControl>
+</div>
+
+@code {
+    IEnumerable<TopBet> totalBets = new List<TopBet>();
+    IEnumerable<TopBet> roundBets = new List<TopBet>();
+
+    protected async override Task OnInitializedAsync()
+    {
+        using var dbContext = await DbContextFactory.CreateDbContextAsync();
+        var bets = RetrieveBets(dbContext);
+        bets = bets.Take(10);
+
+        totalBets = ToBets(await bets.ToListAsync());
+    }
+
+    private async Task RoundLoaded(Round round)
+    {
+        using var dbContext = await DbContextFactory.CreateDbContextAsync();
+        var bets = RetrieveBets(dbContext);
+        bets = bets.Where(x => x.Game.Round.Id == round.Id).Take(10);
+
+        roundBets = ToBets(await bets.ToListAsync());
+
+        StateHasChanged();
+    }
+
+    private IQueryable<BetSelection> RetrieveBets(DataContext dbContext)
+    {
+        return dbContext.BetSelections!
+            .Include(x => x.User)
+            .Include(x => x.BetType)
+            .Include(x => x.Game)
+            .ThenInclude(x => x.HomeTeam)
+            .Include(x => x.Game)
+            .ThenInclude(x => x.AwayTeam)
+            .Include(x => x.Game)
+            .ThenInclude(x => x.Round)
+            .Where(x => x.Result == BetResult.Success)
+            .OrderByDescending(x => x.Odds);
+    }
+
+    private IEnumerable<TopBet> ToBets(IEnumerable<BetSelection> bets)
+        => bets.Select(x => new TopBet(x.User.Email.ToUserName(), x.Name, x.BetType.Descripion, x.Odds, x.Game.Round.Number, x.Game.Link(Config)));
+}

@@ -1,0 +1,34 @@
+﻿<div>
+    <ul>
+        @{
+            var iterator = 1;
+        }
+        @foreach (var bet in TopBets)
+        {
+            <li class="topbets-table">
+                <a href="@bet.GameLink" class="inline">
+                    <p class="width8percent inline text-right">@(iterator++).</p>
+                    <p class="width20percent inline">@bet.UserName</p>
+                    <p class="width20percent inline">@bet.BetKind</p>
+                    <p class="width20percent inline">@bet.BetName</p>
+                    @if (DisplayRound)
+                    {
+                        <p class="width8percent inline text-right">Round @bet.Round</p>                        
+                    }
+                    <p class="width8percent inline text-right">@bet.Odds</p>
+                </a>
+            </li>
+        }
+    </ul>
+</div>
+
+@code {
+    [Parameter]
+    public IEnumerable<TopBet> TopBets { get; set; } = new List<TopBet>();
+
+    [Parameter]
+    public bool DisplayRound { get; set; }
+
+    public record TopBet(string UserName, string BetName, string BetKind, decimal Odds, int Round, string GameLink);
+
+}

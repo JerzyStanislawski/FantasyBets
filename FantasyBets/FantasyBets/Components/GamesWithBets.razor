@@ -93,7 +93,7 @@
         else if (!game.Started())
             return $"/bets/{game.Code}";
         else
-            return $"{Config.Feeds.GameStatsGuiPrefix}/{Config.CurrentSeasonSymbol}/{game.HomeTeam.Name.Replace(' ', '-')}-{game.AwayTeam.Name.Replace(' ', '-')}/{Config.CurrentSeasonCode}/{game.Code}/#boxscore";
+            return game.Link(Config);
     }
 
     private string GameLinkClass()
